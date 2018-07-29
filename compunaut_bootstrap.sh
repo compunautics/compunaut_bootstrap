@@ -36,7 +36,7 @@ set -e
         if [[ ! -d /srv/repos/compunaut_default ]]; then
           git clone https://github.com/compunautics/compunaut_default.git /srv/repos/compunaut_default
 	elif [[ ! -d /srv/repos/compunaut_hypervisor ]]; then
-          git clone https://github.com/compunautics/compunaut_hypervisor /srv/repos/compunaut_hypervisor
+          git clone https://github.com/compunautics/compunaut_hypervisor.git /srv/repos/compunaut_hypervisor
         elif [[ ! -d /srv/repos/compunaut_top ]]; then
           git clone https://github.com/compunautics/compunaut_top.git /srv/repos/compunaut_top
         fi
@@ -49,7 +49,7 @@ set -e
 # Link Repos to Appropriate places in /srv
         # Compunaut specific formulas
         if [[ ! -L /srv/salt/compunaut_default ]]; then
-          ln -s /srv/repos/compunaut_default /srv/salt/compunaut_default
+          ln -s /srv/repos/compunaut_default/salt /srv/salt/compunaut_default
         elif [[ ! -L /srv/salt/compunaut_hypervisor ]]; then
           ln -s /srv/repos/compunaut_hypervisor/salt /srv/salt/compunaut_hypervisor
         elif [[ ! -L /srv/pillar/compunaut_hypervisor ]]; then
