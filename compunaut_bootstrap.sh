@@ -20,7 +20,7 @@ set -e
 
 # Install Salt Master and Minion
   if [[ ! $(dpkg -l | egrep 'salt-master|salt-minion') ]]; then
-    if [[ ! (apt-key list | grep "SaltStack Packaging Team") ]]; then
+    if [[ ! $(apt-key list | grep "SaltStack Packaging Team") ]]; then
       wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
     fi
     if [[ ! -f /etc/apt/sources.list.d/saltstack.list ]]; then
@@ -48,7 +48,7 @@ set -e
   for repo in "${compunaut_repos[@]}"; do
     # Clone repos
     if [[ ! -d /srv/repos/${repo} ]]; then
-      git clone https://github.com/compunautcis/${repo}.git /srv/repos/${repo}
+      git clone https://github.com/compunautics/${repo}.git /srv/repos/${repo}
     fi
     (cd /srv/repos/${repo} && git pull)
     # Link salt dirs
@@ -64,3 +64,11 @@ set -e
       fi
     fi
   done
+
+  # Top is handled outside the loop
+  if [[ ! -L /srv/salt/top.sls ]]; then
+    ln -s /srv/repos/compunaut_top/salt_top.sls /srv/salt/top.sls
+  fi
+  if [[ ! -L /srv/pillar/top.sls ]]; then
+    ln -s /srv/repos/compunaut_top/pillar_top.sls /srv/pillar/top.sls
+  fi
