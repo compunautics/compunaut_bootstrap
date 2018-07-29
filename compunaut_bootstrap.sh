@@ -39,7 +39,7 @@ set -e
 
 # Clone and Link Compunaut Salt Repos
   # Create base salt directories
-  mkdir -pv /srv/{salt,pillar,repos}
+  mkdir -pv /srv/{salt,salt-images,pillar,repos}
 
   # Define compunaut formulas in array
   compunaut_repos=( compunaut_default compunaut_hypervisor compunaut_top )
