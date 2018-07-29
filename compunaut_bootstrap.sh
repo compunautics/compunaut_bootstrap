@@ -41,6 +41,11 @@ set -e
           git clone https://github.com/compunautics/compunaut_top.git /srv/repos/compunaut_top
         fi
 
+        # Fetch all repos to ensure they're up to date
+        (cd /srv/repos/compunaut_default && git pull)
+        (cd /srv/repos/compunaut_hypervisor && git pull)
+        (cd /srv/repos/compunaut_top && git pull)
+
 # Link Repos to Appropriate places in /srv
         # Compunaut specific formulas
         if [[ ! -L /srv/salt/compunaut_default ]]; then
