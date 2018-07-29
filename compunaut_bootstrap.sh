@@ -2,63 +2,65 @@
 set -e
 
 # Echo warning to users
-        echo -e "#####\nThis script should be run as the root user of your intended ubuntu 16.04 hypervisor server.\n#####"
+  echo -e "#####\nThis script should be run as the root user of your intended ubuntu 16.04 hypervisor server.\n#####"
+  sleep 5
 
 # Update sudoers so that sudo group members don't need a password
-	sed -ri 's/^\%sudo\s+ALL=\(ALL:ALL\)+\sALL$/\%sudo\tALL=\(ALL:ALL\)\ NOPASSWD:ALL/g' /etc/sudoers
+  sed -ri 's/^\%sudo\s+ALL=\(ALL:ALL\)+\sALL$/\%sudo\tALL=\(ALL:ALL\)\ NOPASSWD:ALL/g' /etc/sudoers
 
 # Set up hostname
-	hostnamectl set-hostname salt01
-	if [[ ! `grep -P '127.0.1.1\s+salt01' /etc/hosts` ]]; then  
-		echo "127.0.1.1 salt01" | tee -a /etc/hosts
-	fi
+  hostnamectl set-hostname salt01
+  if [[ ! `grep -P '127.0.1.1\s+salt01' /etc/hosts` ]]; then  
+    echo "127.0.1.1 salt01" | tee -a /etc/hosts
+  fi
 
 # Update Everything
-        apt-get update
-        apt-get dist-upgrade -y
+  apt-get -qq update
+  apt-get -q dist-upgrade -y
 
 # Install Salt Master and Minion
-	wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
-	if [[ ! -f /etc/apt/sources.list.d/saltstack.list ]]; then
-          echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest xenial main" | tee -a /etc/apt/sources.list.d/saltstack.list
-        fi
-	apt-get update
-	apt-get install salt-master salt-minion git -y
-        apt autoremove -y
+  if [[ ! $(dpkg -l | egrep 'salt-master|salt-minion') ]]; then
+    if [[ ! (apt-key list | grep "SaltStack Packaging Team") ]]; then
+      wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
+    fi
+    if [[ ! -f /etc/apt/sources.list.d/saltstack.list ]]; then
+      echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest xenial main" | tee -a /etc/apt/sources.list.d/saltstack.list
+    fi
+    apt-get update
+    apt-get install salt-master salt-minion git -y
+  fi
+
+# Autoremove after installations
+  apt autoremove -y
 
 # Configure Salt Minion to talk to local master
-	sed -ri 's/^127.0.0.1\s+localhost$/127.0.0.1\tlocalhost\ salt/g' /etc/hosts
-	salt-key -A -y
+  sed -ri 's/^127.0.0.1\s+localhost$/127.0.0.1\tlocalhost\ salt/g' /etc/hosts
+  salt-key -A -y
 
-# Clone Salt Repos
-        # Compunaut specific formulas
-	mkdir -pv /srv/{salt,pillar,repos}
-        if [[ ! -d /srv/repos/compunaut_default ]]; then
-          git clone https://github.com/compunautics/compunaut_default.git /srv/repos/compunaut_default
-	elif [[ ! -d /srv/repos/compunaut_hypervisor ]]; then
-          git clone https://github.com/compunautics/compunaut_hypervisor.git /srv/repos/compunaut_hypervisor
-        elif [[ ! -d /srv/repos/compunaut_top ]]; then
-          git clone https://github.com/compunautics/compunaut_top.git /srv/repos/compunaut_top
-        fi
+# Clone and Link Compunaut Salt Repos
+  # Create base salt directories
+  mkdir -pv /srv/{salt,pillar,repos}
 
-        # Fetch all repos to ensure they're up to date
-        (cd /srv/repos/compunaut_default && git pull)
-        (cd /srv/repos/compunaut_hypervisor && git pull)
-        (cd /srv/repos/compunaut_top && git pull)
-
-# Link Repos to Appropriate places in /srv
-        # Compunaut specific formulas
-        if [[ ! -L /srv/salt/compunaut_default ]]; then
-          ln -s /srv/repos/compunaut_default/salt /srv/salt/compunaut_default
-        elif [[ ! -L /srv/salt/compunaut_hypervisor ]]; then
-          ln -s /srv/repos/compunaut_hypervisor/salt /srv/salt/compunaut_hypervisor
-        elif [[ ! -L /srv/pillar/compunaut_hypervisor ]]; then
-          ln -s /srv/repos/compunaut_hypervisor/pillar /srv/pillar/compunaut_hypervisor
-        elif [[ ! -L /srv/salt/top.sls ]]; then
-          ln -s /srv/repos/compunaut_top/top.sls /srv/salt/top.sls
-        fi
-
-# Download cloud images
-        #if [[ ! -f /srv/repos/compunaut_hypervisor/salt/images/xenial-server-cloudimg-amd64-disk1.img ]]; then
-         # wget -O /srv/repos/compunaut_hypervisor/salt/images/xenial-server-cloudimg-amd64-disk1.img http://cloud-images.ubuntu.com/xenial/20180724/xenial-server-cloudimg-amd64-disk1.img
-        #fi
+  # Define compunaut formulas in array
+  compunaut_repos=( compunaut_default compunaut_hypervisor compunaut_top )
+        
+  # Clone and link
+  for repo in "${compunaut_repos[@]}"; do
+    # Clone repos
+    if [[ ! -d /srv/repos/${repo} ]]; then
+      git clone https://github.com/compunautcis/${repo}.git /srv/repos/${repo}
+    fi
+    (cd /srv/repos/${repo} && git pull)
+    # Link salt dirs
+    if [[ -d /srv/repos/${repo}/salt ]]; then
+      if [[ ! -L /srv/salt/${repo} ]]; then
+        ln -s /srv/repos/${repo}/salt /srv/salt/${repo}
+      fi
+    fi
+    # Link pillar dirs
+    if [[ -d /srv/repos/${repo}/pillar ]]; then
+      if [[ ! -L /srv/pillar/${repo} ]]; then
+        ln -s /srv/repos/${repo}/pillar /srv/pillar/${repo}
+      fi
+    fi
+  done
