@@ -34,12 +34,17 @@ set -e
         # Compunaut specific formulas
 	mkdir -pv /srv/{salt,pillar,repos}
         if [[ ! -d /srv/repos/compunaut_default ]]; then
-          git clone https://github.com/compunautics/compunaut_default.git
+          git clone https://github.com/compunautics/compunaut_default.git /srv/repos/compunaut_default
 	elif [[ ! -d /srv/repos/compunaut_hypervisor ]]; then
           git clone https://github.com/compunautics/compunaut_hypervisor /srv/repos/compunaut_hypervisor
         elif [[ ! -d /srv/repos/compunaut_top ]]; then
           git clone https://github.com/compunautics/compunaut_top.git /srv/repos/compunaut_top
         fi
+
+        # Fetch all repos to ensure they're up to date
+        (cd /srv/repos/compunaut_default && git pull)
+        (cd /srv/repos/compunaut_hypervisor && git pull)
+        (cd /srv/repos/compunaut_top && git pull)
 
 # Link Repos to Appropriate places in /srv
         # Compunaut specific formulas
