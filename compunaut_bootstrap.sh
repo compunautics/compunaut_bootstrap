@@ -1,5 +1,9 @@
 #!/bin/bash
 set -e
+
+# Echo warning to users
+        echo -e "#####\nThis script should be run as the root user of your intended ubuntu 16.04 hypervisor server.\n#####"
+
 # Update sudoers so that sudo group members don't need a password
 	sed -ri 's/^\%sudo\s+ALL=\(ALL:ALL\)+\sALL$/\%sudo\tALL=\(ALL:ALL\)\ NOPASSWD:ALL/g' /etc/sudoers
 
@@ -27,23 +31,25 @@ set -e
 	salt-key -A -y
 
 # Clone Salt Repos
+        # Compunaut specific formulas
 	mkdir -pv /srv/{salt,pillar,repos}
 	if [[ ! -d /srv/repos/compunaut_hypervisor ]]; then
           git clone https://github.com/compunautics/compunaut_hypervisor /srv/repos/compunaut_hypervisor
+        elif [[ ! -d /srv/repos/compunaut_top ]]; then
+          git clone https://github.com/compunautics/compunaut_top.git /srv/repos/compunaut_top
         fi
 
 # Link Repos to Appropriate places in /srv
+        # Compunaut specific formulas
         if [[ ! -L /srv/salt/compunaut_hypervisor ]]; then
           ln -s /srv/repos/compunaut_hypervisor/salt /srv/salt/compunaut_hypervisor
-        fi
-        if [[ ! -L /srv/pillar/compunaut_hypervisor ]]; then
+        elif [[ ! -L /srv/pillar/compunaut_hypervisor ]]; then
           ln -s /srv/repos/compunaut_hypervisor/pillar /srv/pillar/compunaut_hypervisor
+        elif [[ ! -L /srv/salt/top.sls ]]; then
+          ln -s /srv/repos/compunaut_top/top.sls /srv/salt/top.sls
         fi
 
 # Download cloud images
-        if [[ ! -f /srv/repos/compunaut_hypervisor/salt/images/xenial-server-cloudimg-amd64-disk1.img ]]; then
-          wget -O /srv/repos/compunaut_hypervisor/salt/images/xenial-server-cloudimg-amd64-disk1.img http://cloud-images.ubuntu.com/xenial/20180724/xenial-server-cloudimg-amd64-disk1.img
-        fi
-
-# Create top.sls file
-#	echo -e "base:\n\ \ \'salt\*\':\n    \-\ compunaut_hypervisor" > /srv/salt/top.sls
+        #if [[ ! -f /srv/repos/compunaut_hypervisor/salt/images/xenial-server-cloudimg-amd64-disk1.img ]]; then
+         # wget -O /srv/repos/compunaut_hypervisor/salt/images/xenial-server-cloudimg-amd64-disk1.img http://cloud-images.ubuntu.com/xenial/20180724/xenial-server-cloudimg-amd64-disk1.img
+        #fi
