@@ -73,7 +73,3 @@ set -e
     ln -s /srv/repos/compunaut_top/pillar_top.sls /srv/pillar/top.sls
   fi
 
-# Download Compunaut-Minion qcow2 image
-if [[ ! -f /srv/salt-images/compunaut-minion.qcow2 ]]; then
-  wget -O /srv/salt-images/compunaut-minion.qcow2 http://images.compunaut.io/images/compunaut-minion.qcow2
-fi
