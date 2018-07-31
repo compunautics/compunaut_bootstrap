@@ -76,6 +76,9 @@ set -e
 # Highstate to set up the infrastructure and vms
   salt '*' state.highstate
 
+# Wait a bit for the vms to finish booting
+  sleep 180
+
 # Log into vms and configure salt
   # vpn01
   sshpass -p C0mpun4ut1cs! ssh -l compunaut 172.16.0.2 "hostnamectl set-hostname compunaut-vpn01 && sed -ri 's/compunaut-minion/compunaut-vpn01\n172.16.0.1\tsalt/g' && systemctl start salt-minion"
