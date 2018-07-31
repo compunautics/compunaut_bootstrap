@@ -73,3 +73,11 @@ set -e
     ln -s /srv/repos/compunaut_top/pillar_top.sls /srv/pillar/top.sls
   fi
 
+# Highstate to set up the infrastructure and vms
+  salt '*' state.highstate
+
+# Log into vms and configure salt
+  # vpn01
+  sshpass -p C0mpun4ut1cs! ssh -l compunaut 172.16.0.2 "hostnamectl set-hostname compunaut-vpn01 && sed -ri 's/compunaut-minion/compunaut-vpn01\n172.16.0.1\tsalt/g' && systemctl start salt-minion"
+  # vpn02
+  sshpass -p C0mpun4ut1cs! ssh -l compunaut 172.16.0.3 "hostnamectl set-hostname compunaut-vpn02 && sed -ri 's/compunaut-minion/compunaut-vpn02\n172.16.0.1\tsalt/g' && systemctl start salt-minion"
