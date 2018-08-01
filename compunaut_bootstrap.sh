@@ -81,6 +81,10 @@ set -e
 
 # Log into vms and configure salt
   # vpn01
-  sshpass -p C0mpun4ut1cs! ssh -l compunaut 172.16.0.2 "sudo hostnamectl set-hostname compunaut-vpn01 && sudo sed -ri 's/compunaut-minion/compunaut-vpn01\n172.16.0.1\tsalt/g' /etc/hosts && sudo systemctl start salt-minion"
+  sshpass -p C0mpun4ut1cs! ssh -l compunaut 172.16.0.2 "sudo hostnamectl set-hostname compunaut-vpn01"
+  sshpass -p C0mpun4ut1cs! ssh -l compunaut 172.16.0.2 "sudo sed -ri 's/compunaut-minion/compunaut-vpn01\n172.16.0.1\tsalt/g' /etc/hosts"
+  sshpass -p C0mpun4ut1cs! ssh -l compunaut 172.16.0.2 "sudo systemctl start salt-minion"
   # vpn02
-  sshpass -p C0mpun4ut1cs! ssh -l compunaut 172.16.0.3 "sudo hostnamectl set-hostname compunaut-vpn02 && sudo sed -ri 's/compunaut-minion/compunaut-vpn02\n172.16.0.1\tsalt/g' /etc/hosts && sudo systemctl start salt-minion"
+  sshpass -p C0mpun4ut1cs! ssh -l compunaut 172.16.0.3 "sudo hostnamectl set-hostname compunaut-vpn01"
+  sshpass -p C0mpun4ut1cs! ssh -l compunaut 172.16.0.3 "sudo sed -ri 's/compunaut-minion/compunaut-vpn01\n172.16.0.1\tsalt/g' /etc/hosts"
+  sshpass -p C0mpun4ut1cs! ssh -l compunaut 172.16.0.3 "sudo systemctl start salt-minion"
