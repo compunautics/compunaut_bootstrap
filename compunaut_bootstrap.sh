@@ -77,7 +77,7 @@ set -e
   salt '*' state.highstate
 
 # Wait a bit for the vms to finish booting
-  sleep 300 # to do, if we're setting up the vms for the first time, then wait. If they're already running, then proceed
+  sleep 60 # to do, if we're setting up the vms for the first time, then wait. If they're already running, then proceed
 
 # Log into vms and configure salt
   # vpn01
