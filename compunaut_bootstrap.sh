@@ -96,7 +96,7 @@ set -e
   for ip in $(virsh net-dumpxml br1 | grep -oP "(?<=ip\=\').+?(?=\'\/>)"); do
     vm=$(virsh net-dumpxml br1 | grep ${ip} | grep -oP "(?<=name\=\').+?(?=\')")
     sshpass -p 'C0mpun4ut1cs!' ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -l compunaut ${ip} \
-      "sudo hostnamectl set-hostname compunaut-vpn01 && \
-      sudo sed -ri 's/compunaut-minion/compunaut-vpn01\n172.16.0.1\tsalt/g' /etc/hosts && \
+      "sudo hostnamectl set-hostname ${vm} && \
+      sudo sed -ri 's/compunaut-minion/${vm}\n172.16.0.1\tsalt/g' /etc/hosts && \
       sudo systemctl start salt-minion"
   done
