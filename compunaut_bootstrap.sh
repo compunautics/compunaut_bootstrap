@@ -85,7 +85,7 @@ set -e
   echo -e "\nRefreshing pillars and running highstate..."
   salt '*' saltutil.refresh_pillar # refresh pillar before highstate
   sleep 15 # wait a bit
-  salt '*' state.highstate # now run highstate
+  salt 'salt*' state.highstate # now run highstate
 
 # Wait a bit for the vms to finish booting
   echo -e "\nWait 30 seconds for vms to boot..."
@@ -100,3 +100,6 @@ set -e
       sudo sed -ri 's/compunaut-minion/${vm}\n172.16.0.1\tsalt/g' /etc/hosts && \
       sudo systemctl start salt-minion"
   done
+
+# Run highstate on all other nodes
+  salt 'compunaut*' state.highstate
