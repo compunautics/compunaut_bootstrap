@@ -88,18 +88,28 @@ set -e
   salt 'salt*' state.highstate # now run highstate
 
 # Wait a bit for the vms to finish booting
-  echo -e "\nWait 30 seconds for vms to boot..."
-  sleep 30 # to do, if we're setting up the vms for the first time, then wait. If they're already running, then proceed
+  if [[ ! $(virsh list | grep -i compunaut) ]]; then
+    echo -e "\nWait 30 seconds for vms to boot..."
+    sleep 30
+  fi
 
 # Log into vms and configure salt
   echo -e "\nLog into vms and configure hostname and salt..."
   for ip in $(virsh net-dumpxml br1 | grep -oP "(?<=ip\=\').+?(?=\'\/>)"); do
     vm=$(virsh net-dumpxml br1 | grep ${ip} | grep -oP "(?<=name\=\').+?(?=\')")
+    master_key=$(salt-key -f master.pub | grep -oP '(?<=master.pub:\s\s).+$')
     sshpass -p 'C0mpun4ut1cs!' ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -l compunaut ${ip} \
       "sudo hostnamectl set-hostname ${vm} && \
       sudo sed -ri 's/compunaut-minion/${vm}\n172.16.0.1\tsalt/g' /etc/hosts && \
-      sudo systemctl start salt-minion"
+      sudo sed -ri "s/\#master_finger:\ \'\'/master_finger: ${master_key}/g" /etc/salt/minion && \
+      sudo systemctl start salt-minion && \
+      sudo systemctl enable salt-minion"
   done
 
+# Accept all keys
+  echo -e "\nAccept salt keys from vms..."
+  salt-key -A -y
+
 # Run highstate on all other nodes
+  echo -s "\nRun highstate on all vms..."
   salt 'compunaut*' state.highstate
