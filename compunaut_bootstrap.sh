@@ -1,10 +1,11 @@
 #!/bin/bash
 set -e
+RED='\033[0;31m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Echo warning to users
-  echo -e "#####\nThis script should be run as the root user of your intended ubuntu 16.04 hypervisor server.\n#####"
+  echo -e "#####${RED}\nThis script should be run as the root user of your intended ubuntu 16.04 hypervisor server.\n#####${NC}"
   sleep 5
 
 # Update sudoers so that sudo group members don't need a password
