@@ -90,11 +90,11 @@ NC='\033[0m'
     # Clone repos
     sls_dir=$(cut -d- -f1 <<< ${formula})
     if [[ ! -d /srv/repos/${formula} ]]; then
-      git clone https://github.com/saltstack-formulas/${formula}.git /srv/repos/${formula} #https://github.com/saltstack-formulas/keepalived-formula.git
+      git clone https://github.com/saltstack-formulas/${formula}.git /srv/repos/${formula}
     fi
     # Link salt dirs
     if [[ ! -L /srv/salt/${sls_dir} ]]; then
-      ln -s /srv/repos/${formula} /srv/salt/${formula}
+      ln -s /srv/repos/${formula} /srv/salt/compunaut_${sls_dir}
     fi
   done
 
