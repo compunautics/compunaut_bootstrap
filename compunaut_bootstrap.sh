@@ -93,7 +93,7 @@ NC='\033[0m'
 # Wait a bit for the vms to finish booting
   if [[ ! $(virsh list | grep -i compunaut) ]]; then
     echo -e "${BLUE}\nWait 30 seconds for vms to boot...${NC}"
-    sleep 35
+    sleep 45
   fi
 
 # Log into vms and configure salt
