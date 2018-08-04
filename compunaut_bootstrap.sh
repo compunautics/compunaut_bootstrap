@@ -114,5 +114,5 @@ NC='\033[0m'
   salt-key -A -y
 
 # Run highstate on all other nodes
-  echo -s "${BLUE}\nRun highstate on all vms...${NC}"
+  echo -e "${BLUE}\nRun highstate on all vms...${NC}"
   salt 'compunaut*' state.highstate
