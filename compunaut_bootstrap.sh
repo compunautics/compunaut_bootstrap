@@ -52,7 +52,15 @@ NC='\033[0m'
   mkdir -pv /srv/{salt,salt-images,pillar,repos}
 
   # Define compunaut formulas in array
-  compunaut_repos=( compunaut_default compunaut_hypervisor compunaut_top )
+  compunaut_repos=( 
+    compunaut_default 
+    compunaut_hypervisor 
+    compunaut_top
+    #compunaut_keepalived
+  )
+  saltstack_formulas=( 
+    keepalived-formula 
+  )
         
   # Clone and link
   echo -e "${BLUE}\nCloning/fetching Compunaut repos from Github and setting up local directories...${NC}"
@@ -73,6 +81,20 @@ NC='\033[0m'
       if [[ ! -L /srv/pillar/${repo} ]]; then
         ln -s /srv/repos/${repo}/pillar /srv/pillar/${repo}
       fi
+    fi
+  done
+
+  # Clone and link other salt-formulas
+  echo -e "${BLUE}\nCloning/fetching saltstack formulas...${NC}"
+  for formula in "${saltstack_formulas[@]}"; do
+    # Clone repos
+    sls_dir=$(cut -d- -f1 <<< ${formula})
+    if [[ ! -d /srv/repos/${formula} ]]; then
+      git clone https://github.com/saltstack-formulas/${formula}.git /srv/repos/${formula} #https://github.com/saltstack-formulas/keepalived-formula.git
+    fi
+    # Link salt dirs
+    if [[ ! -L /srv/salt/${sls_dir} ]]; then
+      ln -s /srv/repos/${formula} /srv/salt/${formula}
     fi
   done
 
