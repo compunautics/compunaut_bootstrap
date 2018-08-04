@@ -102,11 +102,11 @@ NC='\033[0m'
     vm=$(virsh net-dumpxml br1 | grep ${ip} | grep -oP "(?<=name\=\').+?(?=\')")
     master_key=$(salt-key -f master.pub | grep -oP '(?<=master.pub:\s\s).+$')
     sshpass -p 'C0mpun4ut1cs!' ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -l compunaut ${ip} \
-      'sudo hostnamectl set-hostname ${vm} && \
-      sudo sed -ri "s/compunaut-minion/${vm}\n172.16.0.1\tsalt/g" /etc/hosts && \
-      sudo sed -ri "s/#master_finger: \\'\\'/master_finger: ${master_key}/g" /etc/salt/minion && \
+      "sudo hostnamectl set-hostname ${vm} && \
+      sudo sed -ri 's/compunaut-minion/${vm}\n172.16.0.1\tsalt/g' /etc/hosts && \
+      sudo sed -ri 's/#master_finger:.+$/master_finger: ${master_key}/g' /etc/salt/minion && \
       sudo systemctl start salt-minion && \
-      sudo systemctl enable salt-minion'
+      sudo systemctl enable salt-minion"
   done
 
 # Accept all keys
