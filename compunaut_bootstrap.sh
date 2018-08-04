@@ -85,16 +85,15 @@ NC='\033[0m'
   fi
 
 # Highstate to set up the infrastructure and vms
-  echo -e "${BLUE}\nRefreshing pillars and running highstate...${NC}"
+  echo -e "${BLUE}\nRefreshing pillars...${NC}"
   salt '*' saltutil.refresh_pillar # refresh pillar before highstate
-  sleep 15 # wait a bit
+  sleep 10 # wait a bit
+  echo -e "${BLUE}\nRunning highstate..."
   salt 'salt*' state.highstate # now run highstate
 
 # Wait a bit for the vms to finish booting
-  if [[ ! $(virsh list | grep -i compunaut) ]]; then
-    echo -e "${BLUE}\nWait 60 seconds for vms to boot...${NC}"
-    sleep 60
-  fi
+  echo -e "${BLUE}\nWait 20 seconds for vms to boot...${NC}"
+  sleep 20
 
 # Log into vms and configure salt
   echo -e "${BLUE}\nLog into vms and configure hostname and salt...${NC}"
@@ -111,8 +110,14 @@ NC='\033[0m'
 
 # Accept all keys
   echo -e "${BLUE}\nAccept salt keys from vms...${NC}"
+  sleep 10
   salt-key -A -y
 
 # Run highstate on all other nodes
-  echo -e "${BLUE}\nRun highstate on all vms...${NC}"
+  echo -e "${BLUE}\nChecking minion readiness...${NC}"
+  while [[ $(salt 'compunaut*' test.ping | grep -i "no response") ]]; do
+    echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
+    sleep 5
+  done
+  echo -e "${BLUE}Running highstate on vms...${NC}"
   salt 'compunaut*' state.highstate
