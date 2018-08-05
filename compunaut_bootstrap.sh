@@ -36,6 +36,13 @@ NC='\033[0m'
     apt-get update
     apt-get install salt-master salt-minion git -y
   fi
+  # Define Salt Mine Access to Minions
+  echo -e \
+  "mine_get:
+  salt.*:
+    - network.get_hostname" > /etc/salt/master.d/salt.conf
+  # Restart Salt Master
+  systemctl restart salt-master
 
 # Autoremove after installations
   echo -e "${BLUE}\nAutoremoving no-longer-needed software...${NC}"
@@ -53,9 +60,9 @@ NC='\033[0m'
 
   # Define compunaut formulas in array
   compunaut_repos=( 
-    compunaut_default 
-    compunaut_hypervisor 
     compunaut_top
+    compunaut_default
+    compunaut_hypervisor 
     compunaut_keepalived
     compunaut_openvpn
   )
