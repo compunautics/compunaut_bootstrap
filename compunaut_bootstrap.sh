@@ -113,13 +113,13 @@ NC='\033[0m'
   echo -e "${BLUE}\nRunning highstate..."
   salt 'salt*' state.highstate # now run highstate
 
-# Wait a bit for the vms to finish booting
-  echo -e "${BLUE}\nWait 20 seconds for vms to boot...${NC}"
-  sleep 20
-
 # Log into vms and configure salt
   echo -e "${BLUE}\nLog into vms and configure hostname and salt...${NC}"
   for ip in $(virsh net-dumpxml br1 | grep -oP "(?<=ip\=\').+?(?=\'\/>)"); do
+    while [[ ! $(nc -vz ${ip} 22 2>&1 | grep -io "succeeded") ]]; do
+      echo -e "${BLUE}Not all minions are ready...\nWaiting 5 seconds...${NC}"
+      sleep 5
+    done
     vm=$(virsh net-dumpxml br1 | grep ${ip} | grep -oP "(?<=name\=\').+?(?=\')")
     master_key=$(salt-key -f master.pub | grep -oP '(?<=master.pub:\s\s).+$')
     sshpass -p 'C0mpun4ut1cs!' ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -l compunaut ${ip} \
