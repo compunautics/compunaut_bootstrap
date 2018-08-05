@@ -57,9 +57,11 @@ NC='\033[0m'
     compunaut_hypervisor 
     compunaut_top
     compunaut_keepalived
+    compunaut_openvpn
   )
   saltstack_formulas=( 
-    keepalived-formula 
+    keepalived-formula
+    openvpn-formula
   )
         
   # Clone and link
