@@ -93,8 +93,8 @@ NC='\033[0m'
       git clone https://github.com/saltstack-formulas/${formula}.git /srv/repos/${formula}
     fi
     # Link salt dirs
-    if [[ ! -L /srv/salt/${sls_dir} ]]; then
-      ln -s /srv/repos/${formula} /srv/salt/compunaut_${sls_dir}
+    if [[ ! -L /srv/salt/compunaut_${sls_dir} ]]; then
+      ln -s /srv/repos/${formula}/${sls_dir} /srv/salt/compunaut_${sls_dir}
     fi
   done
 
