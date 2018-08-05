@@ -56,7 +56,7 @@ NC='\033[0m'
     compunaut_default 
     compunaut_hypervisor 
     compunaut_top
-    #compunaut_keepalived
+    compunaut_keepalived
   )
   saltstack_formulas=( 
     keepalived-formula 
