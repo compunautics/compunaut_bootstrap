@@ -135,7 +135,7 @@ NC='\033[0m'
       "sudo hostnamectl set-hostname ${vm} && \
       sudo sed -ri 's/compunaut-minion/${vm}\n172.16.0.1\tsalt/g' /etc/hosts && \
       sudo sed -ri 's/#master_finger:.+$/master_finger: ${master_key}/g' /etc/salt/minion && \
-      sudo echo -e 'mine_functions:\n  network.get_hostname: []' > /etc/minion.d/salt.conf && \
+      echo -e 'mine_functions:\n  network.get_hostname: []' | sudo tee /etc/salt/minion.d/salt.conf && \
       sudo systemctl start salt-minion && \
       sudo systemctl enable salt-minion"
   done
