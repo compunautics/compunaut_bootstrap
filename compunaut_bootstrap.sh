@@ -118,7 +118,6 @@ NC='\033[0m'
 # Highstate to set up the infrastructure and vms
   echo -e "${BLUE}\nRefreshing pillars...${NC}"
   salt '*' saltutil.refresh_pillar # refresh pillar before highstate
-  sleep 10 # wait a bit
   echo -e "${BLUE}\nRunning highstate..."
   salt 'salt*' state.highstate # now run highstate
 
@@ -151,5 +150,10 @@ NC='\033[0m'
     echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
     sleep 5
   done
+  echo -e "${BLUE}Updating mine and pillars...${NC}"
+  salt '*' mine.update
+  salt '*' saltutil.refresh_pillar
+  echo -e "${BLUE}Generating openvpn certs for minions...${NC}"
+  salt 'salt*' state.apply compunaut_openvpn.certificates
   echo -e "${BLUE}Running highstate on vms...${NC}"
   salt 'compunaut*' state.highstate
