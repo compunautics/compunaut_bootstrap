@@ -36,13 +36,6 @@ NC='\033[0m'
     apt-get update
     apt-get install salt-master salt-minion git -y
   fi
-  # Define Salt Mine Access to Minions
-  echo -e \
-  "mine_get:
-  salt.*:
-    - network.get_hostname" > /etc/salt/master.d/salt.conf
-  # Restart Salt Master
-  systemctl restart salt-master
 
 # Autoremove after installations
   echo -e "${BLUE}\nAutoremoving no-longer-needed software...${NC}"
@@ -62,6 +55,7 @@ NC='\033[0m'
   compunaut_repos=( 
     compunaut_top
     compunaut_default
+    compunaut_salt
     compunaut_hypervisor 
     compunaut_keepalived
     compunaut_openvpn
@@ -118,7 +112,8 @@ NC='\033[0m'
 # Highstate to set up the infrastructure and vms
   echo -e "${BLUE}\nRefreshing pillars...${NC}"
   salt '*' saltutil.refresh_pillar # refresh pillar before highstate
-  echo -e "${BLUE}\nRunning highstate..."
+
+  echo -e "${BLUE}\nRunning to set up hypervisor..."
   salt 'salt*' state.highstate # now run highstate
 
 # Log into vms and configure salt
@@ -134,7 +129,6 @@ NC='\033[0m'
       "sudo hostnamectl set-hostname ${vm} && \
       sudo sed -ri 's/compunaut-minion/${vm}\n172.16.0.1\tsalt/g' /etc/hosts && \
       sudo sed -ri 's/#master_finger:.+$/master_finger: ${master_key}/g' /etc/salt/minion && \
-      echo -e 'mine_functions:\n  network.get_hostname: []' | sudo tee /etc/salt/minion.d/salt.conf && \
       sudo systemctl start salt-minion && \
       sudo systemctl enable salt-minion"
   done
@@ -150,10 +144,31 @@ NC='\033[0m'
     echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
     sleep 5
   done
+
+  echo -e "${BLUE}\nRunning compunaut_salt.master...${NC}"
+  salt '*' state.apply compunaut_salt.master
+
+  echo -e "${BLUE}\nChecking minion readiness...${NC}"
+  while [[ $(salt 'compunaut*' test.ping | grep -i "no response") ]]; do
+    echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
+    sleep 5
+  done
+
+  echo -e "${BLUE}\nRunning compunaut_salt.minion...${NC}"
+  salt '*' state.apply compunaut_salt.minion
+
+  echo -e "${BLUE}\nChecking minion readiness...${NC}"
+  while [[ $(salt 'compunaut*' test.ping | grep -i "no response") ]]; do
+    echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
+    sleep 5
+  done
+
   echo -e "${BLUE}Updating mine and pillars...${NC}"
   salt '*' mine.update
   salt '*' saltutil.refresh_pillar
+
   echo -e "${BLUE}Generating openvpn certs for minions...${NC}"
   salt 'salt*' state.apply compunaut_openvpn.certificates
+
   echo -e "${BLUE}Running highstate on vms...${NC}"
   salt 'compunaut*' state.highstate
