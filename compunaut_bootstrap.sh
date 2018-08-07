@@ -146,7 +146,7 @@ NC='\033[0m'
   done
 
   echo -e "${BLUE}\nRunning compunaut_salt.master...${NC}"
-  salt '*' state.apply compunaut_salt.master
+  salt 'salt*' state.apply compunaut_salt.master
 
   echo -e "${BLUE}\nChecking minion readiness...${NC}"
   while [[ $(salt 'compunaut*' test.ping | grep -i "no response") ]]; do
