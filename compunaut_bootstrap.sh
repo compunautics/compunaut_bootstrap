@@ -4,18 +4,20 @@ RED='\033[0;31m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-# FUNCTIONS
+### FUNCTIONS
 minion_wait() {
+  echo -e "${BLUE}\nChecking minion readiness...${NC}"
   while [[ $(salt 'compunaut*' test.ping | grep -i "no response") ]]; do
     echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
     sleep 5
   done
 }
 
-# Echo warning to users
+### WARNING TO USERS
   echo -e "${RED}#####\nThis script should be run as the root user of your intended ubuntu 16.04 hypervisor server.\n#####${NC}"
   sleep 5
 
+### INITIAL SALT MASTER SETUP
 # Update sudoers so that sudo group members don't need a password
   echo -e "${BLUE}\nUpdating sudoers...${NC}"
   sed -ri 's/^\%sudo\s+ALL=\(ALL:ALL\)+\sALL$/\%sudo\tALL=\(ALL:ALL\)\ NOPASSWD:ALL/g' /etc/sudoers
@@ -54,6 +56,7 @@ minion_wait() {
   sed -ri 's/^127.0.0.1\s+localhost$/127.0.0.1\tlocalhost\ salt/g' /etc/hosts
   salt-key -A -y
 
+### SALT REPO SETUP
 # Clone and Link Compunaut Salt Repos
   # Create base salt directories
   echo -e "${BLUE}\nCreating salt directories...${NC}"
@@ -117,6 +120,7 @@ minion_wait() {
     ln -s /srv/repos/compunaut_top/pillar_top.sls /srv/pillar/top.sls
   fi
 
+### HYPERVISOR SETUP
 # Highstate to set up the infrastructure and vms
   echo -e "${BLUE}\nRefreshing pillars...${NC}"
   salt '*' saltutil.refresh_pillar # refresh pillar before highstate
@@ -141,38 +145,36 @@ minion_wait() {
       sudo systemctl enable salt-minion"
   done
 
-# Accept all keys
+### MINION SETUP
+# Accept all salt keys
   echo -e "${BLUE}\nAccept salt keys from vms...${NC}"
   sleep 10
   salt-key -A -y
 
-# Run highstate on all other nodes
-  echo -e "${BLUE}\nChecking minion readiness...${NC}"
+# Configure mine on master and minions
   minion_wait
-
   echo -e "${BLUE}\nRunning compunaut_salt.master...${NC}"
   salt 'salt*' state.apply compunaut_salt.master
 
-  echo -e "${BLUE}\nChecking minion readiness...${NC}"
   minion_wait
-
   echo -e "${BLUE}\nRunning compunaut_salt.minion...${NC}"
   salt '*' state.apply compunaut_salt.minion
 
-  echo -e "${BLUE}\nChecking minion readiness...${NC}"
+# Refresh pillars and mine before proceeding
   minion_wait
-
   echo -e "${BLUE}Updating pillars...${NC}"
   salt '*' saltutil.refresh_pillar
   sleep 10
+
   echo -e "${BLUE}Updating mine...${NC}"
   salt '*' mine.update
   sleep 10
 
-  echo -e "${BLUE}Generating openvpn certs for minions...${NC}"
+# Create certs, then deploy openvpn
   minion_wait
+  echo -e "${BLUE}Generating openvpn certs for minions...${NC}"
   salt 'salt*' state.apply compunaut_openvpn.certificates
 
-  echo -e "${BLUE}Running highstate on vms...${NC}"
   minion_wait
+  echo -e "${BLUE}Running highstate on vms...${NC}"
   salt 'compunaut*' state.highstate
