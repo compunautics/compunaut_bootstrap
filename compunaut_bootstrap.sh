@@ -113,7 +113,7 @@ NC='\033[0m'
   echo -e "${BLUE}\nRefreshing pillars...${NC}"
   salt '*' saltutil.refresh_pillar # refresh pillar before highstate
 
-  echo -e "${BLUE}\nRunning to set up hypervisor..."
+  echo -e "${BLUE}\nRunning salt to set up hypervisor..."
   salt 'salt*' state.highstate # now run highstate
 
 # Log into vms and configure salt
