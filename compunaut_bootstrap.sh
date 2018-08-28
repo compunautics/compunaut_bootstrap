@@ -13,29 +13,39 @@ minion_wait() {
   done
 }
 
+echo_red() {
+  local message=${1}
+  echo -e "${RED}\n${message}${NC}"
+}
+
+echo_blue() {
+  local message=${1}
+  echo -e "${BLUE}\n${message}...${NC}"
+}
+
 ### WARNING TO USERS
-  echo -e "${RED}#####\nThis script should be run as the root user of your intended ubuntu 16.04 hypervisor server.\n#####${NC}"
+  echo_red "This script should be run as the root user of your intended ubuntu 16.04 hypervisor server."
   sleep 5
 
 ### INITIAL SALT MASTER SETUP
 # Update sudoers so that sudo group members don't need a password
-  echo -e "${BLUE}\nUpdating sudoers...${NC}"
+  echo_blue "Updating sudoers"
   sed -ri 's/^\%sudo\s+ALL=\(ALL:ALL\)+\sALL$/\%sudo\tALL=\(ALL:ALL\)\ NOPASSWD:ALL/g' /etc/sudoers
 
 # Set up hostname
-  echo -e "${BLUE}\nSetting hostname if not set...${NC}"
+  echo_blue "Setting hostname if not set"
   hostnamectl set-hostname salt01
   if [[ ! `grep -P '127.0.1.1\s+salt01' /etc/hosts` ]]; then  
     echo "127.0.1.1 salt01" | tee -a /etc/hosts
   fi
 
 # Update Everything
-  echo -e "${BLUE}\nPerforming updates...${NC}"
+  echo_blue "Performing updates"
   apt-get -qq update
   apt-get -q dist-upgrade -y
 
 # Install Salt Master and Minion
-  echo -e "${BLUE}\nInstalling SaltStack if not installed...${NC}"
+  echo_blue "Installing SaltStack if not installed"
   if [[ ! $(dpkg -l | egrep 'salt-master|salt-minion') ]]; then
     if [[ ! $(apt-key list | grep "SaltStack Packaging Team") ]]; then
       wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
@@ -48,18 +58,18 @@ minion_wait() {
   fi
 
 # Autoremove after installations
-  echo -e "${BLUE}\nAutoremoving no-longer-needed software...${NC}"
+  echo_blue "Autoremoving no-longer-needed software"
   apt autoremove -y
 
 # Configure Salt Minion to talk to local master
-  echo -e "${BLUE}\nConfiguring local salt minion to talk to salt master...${NC}"
+  echo_blue "Configuring local salt minion to talk to salt master"
   sed -ri 's/^127.0.0.1\s+localhost$/127.0.0.1\tlocalhost\ salt/g' /etc/hosts
   salt-key -A -y
 
 ### SALT REPO SETUP
 # Clone and Link Compunaut Salt Repos
   # Create base salt directories
-  echo -e "${BLUE}\nCreating salt directories...${NC}"
+  echo_blue "Creating salt directories"
   mkdir -pv /srv/{salt,salt-images,pillar,repos}
 
   # Define compunaut formulas in array
@@ -77,7 +87,7 @@ minion_wait() {
   )
         
   # Clone and link
-  echo -e "${BLUE}\nCloning/fetching Compunaut repos from Github and setting up local directories...${NC}"
+  echo_blue "Cloning/fetching Compunaut repos from Github and setting up local directories"
   for repo in "${compunaut_repos[@]}"; do
     # Clone repos
     if [[ ! -d /srv/repos/${repo} ]]; then
@@ -99,7 +109,7 @@ minion_wait() {
   done
 
   # Clone and link other salt-formulas
-  echo -e "${BLUE}\nCloning/fetching saltstack formulas...${NC}"
+  echo_blue "Cloning/fetching saltstack formulas"
   for formula in "${saltstack_formulas[@]}"; do
     # Clone repos
     sls_dir=$(cut -d- -f1 <<< ${formula})
@@ -122,17 +132,17 @@ minion_wait() {
 
 ### HYPERVISOR SETUP
 # Highstate to set up the infrastructure and vms
-  echo -e "${BLUE}\nRefreshing pillars...${NC}"
+  echo_blue "Refreshing pillars"
   salt '*' saltutil.refresh_pillar # refresh pillar before highstate
 
-  echo -e "${BLUE}\nRunning salt to set up hypervisor..."
+  echo_blue "Running salt to set up hypervisor"
   salt 'salt*' state.highstate # now run highstate
 
 # Log into vms and configure salt
-  echo -e "${BLUE}\nLog into vms and configure hostname and salt...${NC}"
+  echo_blue "Log into vms and configure hostname and salt"
   for ip in $(virsh net-dumpxml br1 | grep -oP "(?<=ip\=\').+?(?=\'\/>)"); do
     while [[ ! $(nc -vz ${ip} 22 2>&1 | grep -io "succeeded") ]]; do
-      echo -e "${BLUE}Not all minions are ready...\nWaiting 5 seconds...${NC}"
+      echo_blue "Not all minions are ready. Waiting 5 seconds"
       sleep 5
     done
     vm=$(virsh net-dumpxml br1 | grep ${ip} | grep -oP "(?<=name\=\').+?(?=\')")
@@ -147,34 +157,34 @@ minion_wait() {
 
 ### MINION SETUP
 # Accept all salt keys
-  echo -e "${BLUE}\nAccept salt keys from vms...${NC}"
+  echo_blue "Accept salt keys from vms"
   sleep 10
   salt-key -A -y
 
 # Configure mine on master and minions
   minion_wait
-  echo -e "${BLUE}\nRunning compunaut_salt.master...${NC}"
+  echo_blue "Running compunaut_salt.master"
   salt 'salt*' state.apply compunaut_salt.master
 
   minion_wait
-  echo -e "${BLUE}\nRunning compunaut_salt.minion...${NC}"
+  echo_blue "Running compunaut_salt.minion"
   salt '*' state.apply compunaut_salt.minion
 
 # Refresh pillars and mine before proceeding
   minion_wait
-  echo -e "${BLUE}Updating pillars...${NC}"
+  echo_blue "Updating pillars"
   salt '*' saltutil.refresh_pillar
   sleep 10
 
-  echo -e "${BLUE}Updating mine...${NC}"
+  echo_blue "Updating mine"
   salt '*' mine.update
   sleep 10
 
 # Create certs, then deploy openvpn
   minion_wait
-  echo -e "${BLUE}Generating openvpn certs for minions...${NC}"
+  echo_blue "Generating openvpn certs for minions"
   salt 'salt*' state.apply compunaut_openvpn.certificates
 
   minion_wait
-  echo -e "${BLUE}Running highstate on vms...${NC}"
+  echo_blue "Running highstate on vms"
   salt 'compunaut*' state.highstate
