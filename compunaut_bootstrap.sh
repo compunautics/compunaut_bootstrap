@@ -162,11 +162,12 @@ minion_wait() {
   echo -e "${BLUE}\nChecking minion readiness...${NC}"
   minion_wait
 
-  echo -e "${BLUE}Updating mine and pillars...${NC}"
-  salt '*' mine.update
-  sleep 5
+  echo -e "${BLUE}Updating pillars...${NC}"
   salt '*' saltutil.refresh_pillar
-  sleep 5
+  sleep 10
+  echo -e "${BLUE}Updating mine...${NC}"
+  salt '*' mine.update
+  sleep 10
 
   echo -e "${BLUE}Generating openvpn certs for minions...${NC}"
   minion_wait
