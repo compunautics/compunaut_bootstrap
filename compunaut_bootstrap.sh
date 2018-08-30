@@ -87,7 +87,7 @@ echo_blue() {
   fi
   (cd /srv/repos && git submodule init && git submodule update)
   # Link salt dirs
-  for module in ${find /srv/repos -maxdepth 1 -name "*compunaut*"}; do
+  for module in $(find /srv/repos -maxdepth 1 -name "*compunaut*"); do
     if [[ -d /srv/repos/${module}/salt ]]; then
       if [[ ! -L /srv/salt/${module} ]]; then
         ln -s /srv/repos/${module}/salt /srv/salt/${module}
