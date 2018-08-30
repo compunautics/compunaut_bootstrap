@@ -70,17 +70,10 @@ echo_blue() {
 # Clone and Link Compunaut Salt Repos
   # Create base salt directories
   echo_blue "Creating salt directories"
-  mkdir -pv /srv/{salt,salt-images,pillar,repos}
+  mkdir -pv /srv/{salt,salt-images,pillar}
 
   # Define compunaut formulas in array
-  compunaut_repos=( 
-    compunaut_top
-    compunaut_default
-    compunaut_salt
-    compunaut_hypervisor 
-    compunaut_keepalived
-    compunaut_openvpn
-  )
+  compunaut_repos="compunaut" 
   saltstack_formulas=( 
     keepalived-formula
     openvpn-formula
@@ -88,22 +81,22 @@ echo_blue() {
         
   # Clone and link
   echo_blue "Cloning/fetching Compunaut repos from Github and setting up local directories"
-  for repo in "${compunaut_repos[@]}"; do
-    # Clone repos
-    if [[ ! -d /srv/repos/${repo} ]]; then
-      git clone https://github.com/compunautics/${repo}.git /srv/repos/${repo}
-    fi
-    (cd /srv/repos/${repo} && git pull)
-    # Link salt dirs
-    if [[ -d /srv/repos/${repo}/salt ]]; then
-      if [[ ! -L /srv/salt/${repo} ]]; then
-        ln -s /srv/repos/${repo}/salt /srv/salt/${repo}
+  # Clone repos
+  if [[ ! -d /srv/repos ]]; then
+    git clone https://github.com/compunautics/${compunaut_repos}.git /srv/repos
+  fi
+  (cd /srv/repos && git submodule init && git submodule update)
+  # Link salt dirs
+  for module in ${find /srv/repos -maxdepth 1 -name "*compunaut*"}; do
+    if [[ -d /srv/repos/${module}/salt ]]; then
+      if [[ ! -L /srv/salt/${module} ]]; then
+        ln -s /srv/repos/${module}/salt /srv/salt/${module}
       fi
     fi
-    # Link pillar dirs
-    if [[ -d /srv/repos/${repo}/pillar ]]; then
-      if [[ ! -L /srv/pillar/${repo} ]]; then
-        ln -s /srv/repos/${repo}/pillar /srv/pillar/${repo}
+  # Link pillar dirs
+    if [[ -d /srv/repos/${module}/pillar ]]; then
+      if [[ ! -L /srv/pillar/${module} ]]; then
+        ln -s /srv/repos/${module}/pillar /srv/pillar/${module}
       fi
     fi
   done
