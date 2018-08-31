@@ -84,8 +84,9 @@ echo_blue() {
   # Clone repos
   if [[ ! -d /srv/repos ]]; then
     git clone https://github.com/compunautics/${compunaut_repos}.git /srv/repos
+    (cd /srv/repos && git submodule init)
   fi
-  (cd /srv/repos && git submodule init && git submodule update)
+  (cd /srv/repos && git submodule update)
   # Link salt dirs
   for module in $(ls /srv/repos | grep compunaut); do
     if [[ -d /srv/repos/${module}/salt ]]; then
