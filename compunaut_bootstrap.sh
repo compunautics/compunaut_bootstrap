@@ -172,7 +172,7 @@ echo_blue() {
 
   echo_blue "Updating mine"
   salt '*' mine.update
-  sleep 60
+  sleep 30
   salt '*' mine.update
 
 # Create certs, then deploy openvpn
