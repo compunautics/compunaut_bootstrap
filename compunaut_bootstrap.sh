@@ -172,7 +172,7 @@ echo_blue() {
   minion_wait
   echo_blue "Updating pillars"
   salt '*' saltutil.refresh_pillar
-  sleep 60
+  sleep 45
 
   echo_blue "Updating mine"
   salt '*' mine.update
@@ -190,7 +190,12 @@ echo_blue() {
   minion_wait
   echo_blue "Updating mine"
   salt '*' mine.update
-  sleep 15
+  sleep 30
+
+  minion_wait
+  echo_blue "Updating pillar"
+  salt '*' saltutil.refresh_pillar
+  sleep 30
 
   minion_wait
   echo_blue "Inserting DNS into dnsmasq servers"
