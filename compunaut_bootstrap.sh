@@ -193,10 +193,12 @@ echo_blue() {
 
   minion_wait
   echo_blue "Updating mine"
+  salt '*' mine.update
   sleep 30
 
   minion_wait
   echo_blue "Updating pillar"
+  salt '*' saltutil.refresh_pillar
   sleep 30
 
   minion_wait
