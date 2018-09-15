@@ -173,8 +173,7 @@ echo_blue() {
 
   echo_blue "Updating mine"
   salt '*' mine.update
-  sleep 30
-  salt '*' mine.update
+  sleep 15
 
 # Create certs, then deploy openvpn
   minion_wait
