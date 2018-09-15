@@ -161,6 +161,7 @@ echo_blue() {
   minion_wait
   echo_blue "Running compunaut_salt.master"
   salt 'salt*' state.apply compunaut_salt.master
+  sleep 30
 
   minion_wait
   echo_blue "Running compunaut_salt.minion"
