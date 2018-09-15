@@ -186,9 +186,9 @@ echo_blue() {
   salt 'compunaut*' state.highstate
 
   minion_wait
-  echo_blue "Updating mine again"
+  echo_blue "Updating mine"
   salt '*' mine.update
 
   minion_wait
-  echo_blue "Running highstate on vms again"
-  salt 'compunaut*' state.highstate
+  echo_blue "Inserting DNS into dnsmasq servers"
+  salt 'compunaut-vpn*' state.apply compunaut_dnsmasq
