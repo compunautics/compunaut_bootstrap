@@ -189,6 +189,7 @@ echo_blue() {
   minion_wait
   echo_blue "Updating mine"
   salt '*' mine.update
+  sleep 15
 
   minion_wait
   echo_blue "Inserting DNS into dnsmasq servers"
