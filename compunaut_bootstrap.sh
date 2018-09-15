@@ -77,6 +77,7 @@ echo_blue() {
   saltstack_formulas=( 
     keepalived-formula
     openvpn-formula
+    dnsmasq-formula
   )
         
   # Clone and link
