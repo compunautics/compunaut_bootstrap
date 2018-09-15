@@ -166,6 +166,7 @@ echo_blue() {
   salt '*' state.apply compunaut_salt.minion
 
 # Refresh pillars and mine before proceeding
+  sleep 15
   minion_wait
   echo_blue "Updating pillars"
   salt '*' saltutil.refresh_pillar
