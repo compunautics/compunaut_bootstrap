@@ -184,3 +184,11 @@ echo_blue() {
   minion_wait
   echo_blue "Running highstate on vms"
   salt 'compunaut*' state.highstate
+
+  minion_wait
+  echo_blue "Updating mine again"
+  salt '*' mine.update
+
+  minion_wait
+  echo_blue "Running highstate on vms again"
+  salt 'compunaut*' state.highstate
