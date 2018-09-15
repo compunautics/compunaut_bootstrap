@@ -78,6 +78,7 @@ echo_blue() {
     keepalived-formula
     openvpn-formula
     dnsmasq-formula
+    resolver-formula
   )
         
   # Clone and link
