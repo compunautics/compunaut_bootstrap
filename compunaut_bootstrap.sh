@@ -184,19 +184,21 @@ echo_blue() {
   salt 'salt*' state.apply compunaut_openvpn.certificates
 
   minion_wait
-  echo_blue "Running highstate on vms"
-  salt 'compunaut*' state.highstate
+  echo_blue "Installing openvpn on vpn servers"
+  salt 'compunaut-vpn*' state.apply compunaut_openvpn,compunaut_keepalived,compunaut_default
+
+  minion_wait
+  echo_blue "Installing openvpn on remaining vms"
+  salt 'compunaut*' state.apply compunaut_openvpn,compunaut_default
 
   minion_wait
   echo_blue "Updating mine"
-  salt '*' mine.update
   sleep 30
 
   minion_wait
   echo_blue "Updating pillar"
-  salt '*' saltutil.refresh_pillar
   sleep 30
 
   minion_wait
-  echo_blue "Inserting DNS into dnsmasq servers"
-  salt 'compunaut-vpn*' state.apply compunaut_dnsmasq
+  echo_blue "Running highstate on vms"
+  salt 'compunaut*' state.highstate
