@@ -191,6 +191,7 @@ echo_blue() {
   echo_blue "Installing openvpn on remaining vms"
   salt 'compunaut*' state.apply compunaut_openvpn,compunaut_default
 
+# Highstate the vms
   minion_wait
   echo_blue "Updating mine"
   salt '*' mine.update
@@ -204,3 +205,7 @@ echo_blue() {
   minion_wait
   echo_blue "Running highstate on vms"
   salt 'compunaut*' state.highstate
+
+# Run dns on salt again
+  echo_blue "Setting up dnsmasq on salt master"
+  salt 'salt*' state.apply compunaut_dnsmasq
