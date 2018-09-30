@@ -36,6 +36,7 @@ echo_blue() {
     openvpn-formula
     dnsmasq-formula
     resolver-formula
+    consul-formula
   )
         
   # Clone and link
