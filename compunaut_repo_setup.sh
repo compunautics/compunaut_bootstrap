@@ -29,24 +29,14 @@ echo_blue() {
   echo_blue "Creating salt directories"
   mkdir -pv /srv/{salt,salt-images,pillar}
 
-  # Define compunaut formulas in array
-  compunaut_repos="compunaut" 
-  saltstack_formulas=( 
-    keepalived-formula
-    openvpn-formula
-    dnsmasq-formula
-    resolver-formula
-    consul-formula
-  )
-        
   # Clone and link
   echo_blue "Cloning/fetching Compunaut repos from Github and setting up local directories"
   # Clone repos
   if [[ ! -d /srv/repos ]]; then
-    git clone https://github.com/compunautics/${compunaut_repos}.git /srv/repos
+    git clone https://github.com/compunautics/compunaut.git /srv/repos
     (cd /srv/repos && git submodule init)
   fi
-  (cd /srv/repos && git submodule update --remote)
+  (cd /srv/repos && git pull && git submodule update --remote)
   # Link salt dirs
   for module in $(ls /srv/repos | grep compunaut); do
     if [[ -d /srv/repos/${module}/salt ]]; then
@@ -63,13 +53,10 @@ echo_blue() {
   done
 
   # Clone and link other salt-formulas
-  echo_blue "Cloning/fetching saltstack formulas"
-  for formula in "${saltstack_formulas[@]}"; do
+  echo_blue "Linking saltstack formulas"
+  for formula in $(ls /srv/repos/ | grep -Pv 'LICENSE|compunaut'); do
     # Clone repos
     sls_dir=$(cut -d- -f1 <<< ${formula})
-    if [[ ! -d /srv/repos/${formula} ]]; then
-      git clone https://github.com/saltstack-formulas/${formula}.git /srv/repos/${formula}
-    fi
     # Link salt dirs
     if [[ ! -L /srv/salt/${sls_dir} ]]; then
       ln -s /srv/repos/${formula}/${sls_dir} /srv/salt/${sls_dir}
