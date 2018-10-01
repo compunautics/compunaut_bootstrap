@@ -37,7 +37,6 @@ echo_blue() {
     dnsmasq-formula
     resolver-formula
     consul-formula
-    mysql-formula
   )
         
   # Clone and link
