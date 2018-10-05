@@ -100,9 +100,9 @@ echo_blue() {
   sleep 15
 
   echo_blue "Installing MySQL"
-  salt 'compunaut_db*' state.apply compunaut_mysql
+  salt 'compunaut-db*' state.apply compunaut_mysql
   echo_blue "Setting up Galera"
-  salt 'compunaut_db*' state.apply compunaut_mysql.galera
+  salt 'compunaut-db*' state.apply compunaut_mysql.galera
 
 # Highstate the vms
   minion_wait
