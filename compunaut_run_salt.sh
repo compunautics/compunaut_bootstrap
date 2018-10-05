@@ -88,16 +88,32 @@ echo_blue() {
   echo_blue "Installing openvpn on remaining vms"
   salt 'compunaut*' state.apply compunaut_openvpn,compunaut_default
 
-# Highstate the vms
+# Install databases
   minion_wait
   echo_blue "Updating mine"
   salt '*' mine.update
-  sleep 30
+  sleep 15
 
   minion_wait
   echo_blue "Updating pillar"
   salt '*' saltutil.refresh_pillar
-  sleep 30
+  sleep 15
+
+  echo_blue "Installing MySQL"
+  salt 'compunaut_db*' state.apply compunaut_mysql
+  echo_blue "Setting up Galera"
+  salt 'compunaut_db*' state.apply compunaut_mysql.galera
+
+# Highstate the vms
+  minion_wait
+  echo_blue "Updating mine"
+  salt '*' mine.update
+  sleep 15
+
+  minion_wait
+  echo_blue "Updating pillar"
+  salt '*' saltutil.refresh_pillar
+  sleep 15
 
   minion_wait
   echo_blue "Running highstate on vms"
