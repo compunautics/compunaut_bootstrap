@@ -56,13 +56,8 @@ echo_blue() {
 
 # Configure mine on master and minions
   minion_wait
-  echo_blue "Running compunaut_salt.master"
-  salt 'salt*' state.apply compunaut_salt.master
-  sleep 30
-
-  minion_wait
-  echo_blue "Running compunaut_salt.minion"
-  salt '*' state.apply compunaut_salt.minion
+  echo_blue "Running compunaut_salt"
+  salt '*' state.apply compunaut_salt
 
 # Refresh pillars and mine before proceeding
   sleep 15
