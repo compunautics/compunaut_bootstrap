@@ -36,7 +36,7 @@ echo_blue() {
     git clone https://github.com/compunautics/compunaut.git /srv/repos
     (cd /srv/repos && git submodule init)
   fi
-  (cd /srv/repos && git pull && git submodule update --remote)
+  (cd /srv/repos && git pull && git submodule update --init --remote)
   # Link salt dirs
   for module in $(ls /srv/repos | grep compunaut); do
     if [[ -d /srv/repos/${module}/salt ]]; then
