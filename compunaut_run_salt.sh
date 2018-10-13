@@ -99,7 +99,7 @@ echo_blue() {
   sleep 15
 
   echo_blue "Installing MySQL"
-  salt 'compunaut-db*' state.apply compunaut_mysql
+  salt 'compunaut-db*' state.apply compunaut_mysql,compunaut_influxdb
 
   echo_blue "Updating mine"
   salt '*' mine.update
