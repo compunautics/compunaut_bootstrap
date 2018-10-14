@@ -24,4 +24,4 @@ echo_red() {
   ./compunaut_repo_setup.sh
 
 # Run salt
-  ./compunaut_run_salt.sh
+  ./compunaut_salt_run.sh
