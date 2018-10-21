@@ -146,3 +146,6 @@ echo_blue() {
 # Run dns on salt again
   echo_blue "Setting up dnsmasq on salt master"
   salt 'salt*' state.apply compunaut_dnsmasq
+
+# Don't exit until all salt minions are answering
+  minion_wait
