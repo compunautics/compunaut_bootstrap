@@ -108,7 +108,27 @@ echo_blue() {
   echo_blue "Setting up Galera"
   salt 'compunaut-db*' state.apply compunaut_mysql.galera
 
-# Highstate the vms
+  minion_wait
+
+  echo_blue "Installing InfluxDB and Relay"
+  salt 'compunaut-db*' state.apply compunaut_influxdb
+
+# Install consul
+  minion_wait
+  echo_blue "Updating mine"
+  salt '*' mine.update
+  sleep 15
+
+  minion_wait
+  echo_blue "Updating pillar"
+  salt '*' saltutil.refresh_pillar
+  sleep 15
+
+  minion_wait
+  echo_blue "Installing Consul"
+  salt 'compunaut*' state.apply compunaut_consul
+
+# Running highstate
   minion_wait
   echo_blue "Updating mine"
   salt '*' mine.update
