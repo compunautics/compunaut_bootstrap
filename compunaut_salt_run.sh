@@ -97,8 +97,8 @@ echo_blue() {
   salt '*' saltutil.refresh_pillar
   sleep 15
 
-  echo_blue "Installing MySQL"
-  salt 'compunaut-db*' state.apply compunaut_mysql
+  echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
+  salt 'compunaut-db*' state.apply compunaut_mysql,compunaut_influxdb
 
   echo_blue "Updating mine"
   salt '*' mine.update
@@ -106,11 +106,6 @@ echo_blue() {
 
   echo_blue "Setting up Galera"
   salt 'compunaut-db*' state.apply compunaut_mysql.galera
-
-  minion_wait
-
-  echo_blue "Installing InfluxDB and Relay"
-  salt 'compunaut-db*' state.apply compunaut_influxdb
 
 # Install consul
   minion_wait
