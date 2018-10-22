@@ -142,4 +142,6 @@ echo_blue() {
   salt 'salt*' state.apply compunaut_dnsmasq
 
 # Don't exit until all salt minions are answering
+  echo_blue "All done! Waiting for all minions to respond to test pings, but you can ctrl-c out of the script now"
   minion_wait
+  echo_blue "All minions are now responding. You may run salt commands against them now"
