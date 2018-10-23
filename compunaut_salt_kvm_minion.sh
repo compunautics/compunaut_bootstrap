@@ -56,4 +56,3 @@ salt_master=${2}
 # Configure Salt Minion to talk to master
   echo_blue "Configuring local salt minion to talk to salt master"
   sed -ri "s/^127.0.0.1\s+localhost$/127.0.0.1\tlocalhost\n${salt_master}\ salt/g" /etc/hosts
-  salt-key -A -y
