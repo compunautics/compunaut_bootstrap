@@ -19,7 +19,7 @@ echo_blue() {
 minion_hostname=${1}
 salt_master=${2}
 
-### INITIAL SALT MASTER SETUP
+### INITIAL SALT SETUP
 # Update sudoers so that sudo group members don't need a password
   echo_blue "Updating sudoers"
   sed -ri 's/^\%sudo\s+ALL=\(ALL:ALL\)+\sALL$/\%sudo\tALL=\(ALL:ALL\)\ NOPASSWD:ALL/g' /etc/sudoers
@@ -55,4 +55,6 @@ salt_master=${2}
 
 # Configure Salt Minion to talk to master
   echo_blue "Configuring local salt minion to talk to salt master"
-  sed -ri "s/^127.0.0.1\s+localhost$/127.0.0.1\tlocalhost\n${salt_master}\ salt/g" /etc/hosts
+  if [[ ! $(grep "${salt_master}" /etc/hosts) ]]; then 
+    sed -ri "s/^127.0.0.1\s+localhost$/127.0.0.1\tlocalhost\n${salt_master}\ salt/g" /etc/hosts
+  fi
