@@ -26,9 +26,9 @@ salt_master=${2}
 
 # Set up hostname
   echo_blue "Setting hostname if not set"
-  hostnamectl set-hostname salt01
-  if [[ ! `grep -P '127.0.1.1\s+salt01' /etc/hosts` ]]; then  
-    echo "127.0.1.1 salt01" | tee -a /etc/hosts
+  hostnamectl set-hostname ${minion_hostname}
+  if [[ ! `grep -P "127.0.1.1\s+${minion_hostname}" /etc/hosts` ]]; then  
+    echo "127.0.1.1 ${minion_hostname}" | tee -a /etc/hosts
   fi
 
 # Update Everything
@@ -36,7 +36,7 @@ salt_master=${2}
   apt-get -qq update
   apt-get -q dist-upgrade -y
 
-# Install Salt Master and Minion
+# Install Salt Minion
   echo_blue "Installing SaltStack if not installed"
   if [[ ! $(dpkg -l | egrep 'salt-minion') ]]; then
     if [[ ! $(apt-key list | grep "SaltStack Packaging Team") ]]; then
@@ -53,7 +53,7 @@ salt_master=${2}
   echo_blue "Autoremoving no-longer-needed software"
   apt autoremove -y
 
-# Configure Salt Minion to talk to local master
+# Configure Salt Minion to talk to master
   echo_blue "Configuring local salt minion to talk to salt master"
   sed -ri "s/^127.0.0.1\s+localhost$/127.0.0.1\tlocalhost\n${salt_master}\ salt/g" /etc/hosts
   salt-key -A -y
