@@ -16,9 +16,6 @@ echo_red() {
 # Set working directory as root dir for this script
   cd "${0%/*}"
 
-# Set up salt master and minion
-  ./compunaut_salt_master.sh
-
 # Set up repositories
   ./compunaut_repo_setup.sh
 
