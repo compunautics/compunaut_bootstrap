@@ -60,6 +60,7 @@ echo_blue() {
   minion_wait
   salt '*' state.apply compunaut_salt
 
+### DEPLOY COMPUNAUT
 # Create certs, then deploy openvpn
   sleep 30
   update_data
@@ -114,7 +115,7 @@ echo_blue() {
   update_data
 
   echo_blue "Setting up dnsmasq on salt master"
-  salt 'salt*' state.apply compunaut_dnsmasq
+  salt -C 'salt* or kvm*' state.apply compunaut_dnsmasq
 
 # Don't exit until all salt minions are answering
   echo_blue "All done! Waiting for all minions to respond to test pings, but you can ctrl-c out of the script now"
