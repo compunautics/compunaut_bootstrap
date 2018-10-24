@@ -12,6 +12,18 @@ minion_wait() {
   done
 }
 
+update_data() {
+  minion_wait
+  echo_blue "Updating mine"
+  salt '*' mine.update
+  sleep 15
+
+  minion_wait
+  echo_blue "Updating pillar"
+  salt '*' saltutil.refresh_pillar
+  sleep 15
+}
+
 echo_red() {
   local message=${1}
   echo -e "${RED}\n${message}${NC}"
@@ -24,8 +36,7 @@ echo_blue() {
 
 ### HYPERVISOR SETUP
 # Highstate to set up the infrastructure and vms
-  echo_blue "Refreshing pillars"
-  salt '*' saltutil.refresh_pillar # refresh pillar before highstate
+  update_data
 
   echo_blue "Running salt to set up hypervisor"
   salt -C 'salt* or kvm*' state.highstate # now run highstate
@@ -49,18 +60,10 @@ echo_blue() {
   minion_wait
   salt '*' state.apply compunaut_salt
 
-# Refresh pillars and mine before proceeding
-  sleep 15
-  minion_wait
-  echo_blue "Updating pillars"
-  salt '*' saltutil.refresh_pillar
-  sleep 45
-
-  echo_blue "Updating mine"
-  salt '*' mine.update
-  sleep 15
-
 # Create certs, then deploy openvpn
+  sleep 30
+  update_data
+
   minion_wait
   echo_blue "Generating openvpn certs for minions"
   salt 'salt*' state.apply compunaut_openvpn.certificates
@@ -74,57 +77,42 @@ echo_blue() {
   salt 'compunaut*' state.apply compunaut_openvpn,compunaut_default
 
 # Install databases
-  minion_wait
-  echo_blue "Updating mine"
-  salt '*' mine.update
-  sleep 15
+  update_data
 
   minion_wait
-  echo_blue "Updating pillar"
-  salt '*' saltutil.refresh_pillar
-  sleep 15
-
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
   salt 'compunaut-db*' state.apply compunaut_mysql,compunaut_influxdb
 
-  echo_blue "Updating mine"
-  salt '*' mine.update
-  sleep 15 
+  update_data
 
+  minion_wait
   echo_blue "Setting up Galera"
   salt 'compunaut-db*' state.apply compunaut_mysql.galera
 
 # Install consul
-  minion_wait
-  echo_blue "Updating mine"
-  salt '*' mine.update
-  sleep 15
-
-  minion_wait
-  echo_blue "Updating pillar"
-  salt '*' saltutil.refresh_pillar
-  sleep 15
+  update_data
 
   minion_wait
   echo_blue "Installing Consul"
   salt 'compunaut*' state.apply compunaut_consul
 
-# Running highstate
-  minion_wait
-  echo_blue "Updating mine"
-  salt '*' mine.update
-  sleep 15
+# Install Grafana
+  update_data
 
   minion_wait
-  echo_blue "Updating pillar"
-  salt '*' saltutil.refresh_pillar
-  sleep 15
+  echo_blue "Installing Grafana"
+  salt 'compunaut-monitor*' state.apply compunaut_grafana -b1
+
+# Running highstate
+  update_data
 
   minion_wait
   echo_blue "Running highstate on vms"
   salt 'compunaut*' state.highstate
 
 # Run dns on salt again
+  update_data
+
   echo_blue "Setting up dnsmasq on salt master"
   salt 'salt*' state.apply compunaut_dnsmasq
 
