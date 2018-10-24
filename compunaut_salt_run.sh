@@ -28,24 +28,11 @@ echo_blue() {
   salt '*' saltutil.refresh_pillar # refresh pillar before highstate
 
   echo_blue "Running salt to set up hypervisor"
-  salt 'salt*' state.highstate # now run highstate
+  salt -C 'salt* or kvm*' state.highstate # now run highstate
 
 # Log into vms and configure salt
   echo_blue "Log into vms and configure hostname and salt"
-  for ip in $(virsh net-dumpxml br1 | grep -oP "(?<=ip\=\').+?(?=\'\/>)"); do
-    while [[ ! $(nc -vz ${ip} 22 2>&1 | grep -io "succeeded") ]]; do
-      echo_blue "Not all minions are ready. Waiting 5 seconds"
-      sleep 5
-    done
-    vm=$(virsh net-dumpxml br1 | grep ${ip} | grep -oP "(?<=name\=\').+?(?=\')")
-    master_key=$(salt-key -f master.pub | grep -oP '(?<=master.pub:\s\s).+$')
-    sshpass -p 'C0mpun4ut1cs!' ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -l compunaut ${ip} \
-      "sudo hostnamectl set-hostname ${vm} && \
-      sudo sed -ri 's/compunaut-minion/${vm}\n172.16.0.1\tsalt/g' /etc/hosts && \
-      sudo sed -ri 's/#master_finger:.+$/master_finger: ${master_key}/g' /etc/salt/minion && \
-      sudo systemctl start salt-minion && \
-      sudo systemctl enable salt-minion"
-  done
+  salt -C 'salt* or kvm*' state.apply compunaut_hypervisor.salt_vms
 
 ### MINION SETUP
 # Accept all salt keys
