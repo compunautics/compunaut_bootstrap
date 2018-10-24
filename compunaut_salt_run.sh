@@ -97,6 +97,13 @@ echo_blue() {
   echo_blue "Installing Consul"
   salt 'compunaut*' state.apply compunaut_consul
 
+# Install dnsmasq
+  update_data
+
+  minion_wait
+  echo_blue "Installing dnsmasq"
+  salt 'compunaut*' state.apply compunaut_dnsmasq
+
 # Install Grafana
   update_data
 
