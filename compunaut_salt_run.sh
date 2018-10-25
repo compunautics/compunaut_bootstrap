@@ -55,14 +55,12 @@ echo_blue() {
   minion_wait
   echo_blue "Running compunaut_salt"
   salt 'salt*' state.apply compunaut_salt.master
-  sleep 15
 
   minion_wait
   salt '*' state.apply compunaut_salt
 
 ### DEPLOY COMPUNAUT
 # Create certs, then deploy openvpn
-  sleep 30
   update_data
 
   minion_wait
