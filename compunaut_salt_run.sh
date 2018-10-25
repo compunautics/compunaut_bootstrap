@@ -122,7 +122,7 @@ echo_blue() {
   update_data
 
   echo_blue "Setting up dnsmasq on salt master"
-  salt -C 'salt* or kvm*' state.apply compunaut_dnsmasq
+  salt -C 'salt* or kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn
 
 # Don't exit until all salt minions are answering
   echo_blue "All done! Waiting for all minions to respond to test pings, but you can ctrl-c out of the script now"
