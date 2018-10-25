@@ -116,11 +116,14 @@ echo_blue() {
   echo_blue "Running highstate on vms"
   salt 'compunaut*' state.highstate
 
-# Run dns on salt again
+# Final kvm node setup
   update_data
 
   echo_blue "Setting up dnsmasq, openvpn, and consul on kvm nodes"
-  salt -C 'salt* or kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn,compunaut_consul
+  salt -C 'salt* or kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn
+
+  update_data
+  salt -C 'salt* or kvm*' state.apply compunaut_consul
 
 # Don't exit until all salt minions are answering
   echo_blue "All done! Waiting for all minions to respond to test pings, but you can ctrl-c out of the script now"
