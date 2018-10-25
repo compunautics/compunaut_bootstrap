@@ -93,14 +93,10 @@ echo_blue() {
 
   minion_wait
   echo_blue "Installing Consul"
-  salt 'compunaut*' state.apply compunaut_consul
+  salt 'compunaut*' state.apply compunaut_consul,compunaut_dnsmasq
 
-# Install dnsmasq
-  update_data
-
-  minion_wait
-  echo_blue "Installing dnsmasq"
-  salt 'compunaut*' state.apply compunaut_dnsmasq
+# Restart Openvpn to ensure connectivity
+  salt '*' cmd.run 'systemctl restart openvpn'
 
 # Install Grafana
   update_data
