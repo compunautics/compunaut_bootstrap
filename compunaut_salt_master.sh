@@ -52,3 +52,6 @@ echo_blue() {
   echo_blue "Configuring local salt minion to talk to salt master"
   sed -ri 's/^127.0.0.1\s+localhost$/127.0.0.1\tlocalhost\ salt/g' /etc/hosts
   salt-key -A -y
+
+# Set up KVM
+  salt 'salt*' state.apply compunaut_hypervisor.ssh,compunaut_hypervisor.kvm,compunaut_hypervisor.network
