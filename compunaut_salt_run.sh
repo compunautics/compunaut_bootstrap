@@ -6,7 +6,7 @@ NC='\033[0m'
 ### FUNCTIONS
 minion_wait() {
   echo -e "${BLUE}\nChecking minion readiness...${NC}"
-  while [[ $(salt 'compunaut*' test.ping | grep -i "no response") ]]; do
+  while [[ $(salt '*' test.ping | grep -i "no response") ]]; do
     echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
     sleep 5
   done
@@ -38,7 +38,7 @@ echo_blue() {
 # Highstate to set up the infrastructure and vms
   update_data
 
-  echo_blue "Running salt to set up hypervisor"
+  echo_blue "SET UP HYPERVISOR"
   salt -C 'salt* or kvm*' state.highstate # now run highstate
 
 # Log into vms and configure salt
@@ -47,6 +47,7 @@ echo_blue() {
 
 ### MINION SETUP
 # Accept all salt keys
+  echo_blue "SET UP COMPUNAUT MINIONS"
   echo_blue "Accept salt keys from vms"
   sleep 10
   salt-key -A -y
@@ -61,6 +62,7 @@ echo_blue() {
   salt '*' state.apply compunaut_salt
 
 ### DEPLOY COMPUNAUT
+  echo_blue "DEPLOY COMPUNAUT"
 # Create certs, then deploy openvpn
   update_data
   sleep 20
