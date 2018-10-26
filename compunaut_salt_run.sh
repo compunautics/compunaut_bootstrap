@@ -63,6 +63,9 @@ echo_blue() {
 ### DEPLOY COMPUNAUT
 # Create certs, then deploy openvpn
   update_data
+  sleep 30
+  update_data
+  sleep 15
 
   minion_wait
   echo_blue "Generating openvpn certs for minions"
