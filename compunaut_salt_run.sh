@@ -16,12 +16,12 @@ update_data() {
   minion_wait
   echo_blue "Updating mine"
   salt '*' mine.update
-  sleep 5
+  sleep 10
 
   minion_wait
   echo_blue "Updating pillar"
   salt '*' saltutil.refresh_pillar
-  sleep 5
+  sleep 10
 }
 
 echo_red() {
@@ -63,9 +63,9 @@ echo_blue() {
 ### DEPLOY COMPUNAUT
 # Create certs, then deploy openvpn
   update_data
-  sleep 30
+  sleep 20
   update_data
-  sleep 15
+  sleep 20
 
   minion_wait
   echo_blue "Generating openvpn certs for minions"
@@ -108,6 +108,9 @@ echo_blue() {
 
 # Running highstate
   update_data
+  sleep 20
+  update_data
+  sleep 20
 
   minion_wait
   echo_blue "Running highstate on vms"
@@ -120,9 +123,9 @@ echo_blue() {
   salt -C 'salt* or kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn
 
   update_data
+  sleep 20
+
   salt -C 'salt* or kvm*' state.apply compunaut_consul
 
 # Don't exit until all salt minions are answering
-  echo_blue "All done! Waiting for all minions to respond to test pings, but you can ctrl-c out of the script now"
-  minion_wait
   echo_blue "All minions are now responding. You may run salt commands against them now"
