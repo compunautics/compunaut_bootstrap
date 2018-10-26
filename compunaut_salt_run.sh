@@ -102,7 +102,7 @@ echo_blue() {
 # Restart Openvpn to ensure connectivity
   minion_wait
   echo_blue "Restarting openvpn to ensure connectivity"
-  salt '*' cmd.run 'systemctl restart openvpn'
+  salt '*' cmd.run 'systemctl restart openvpn' -b4
 
 # Install Grafana
   update_data
