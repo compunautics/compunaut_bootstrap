@@ -124,6 +124,8 @@ echo_blue() {
 
   update_data
   sleep 20
+  update_data
+  sleep 20
 
   salt -C 'salt* or kvm*' state.apply compunaut_consul
 
