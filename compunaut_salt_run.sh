@@ -94,6 +94,13 @@ echo_blue() {
   echo_blue "Setting up Galera"
   salt 'compunaut-db*' state.apply compunaut_mysql.galera
 
+# Install openldap
+  update_data
+
+  minion_wait
+  echo_blue "Installing OpenLDAP"
+  salt 'compunaut-ldap*' state.apply compunaut_openldap
+
 # Install consul
   update_data
 
