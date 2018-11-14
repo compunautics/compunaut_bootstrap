@@ -126,6 +126,7 @@ echo_blue() {
 
   echo_blue "Setting up dnsmasq, openvpn, and consul on kvm nodes"
   salt -C 'salt* or kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn
+  salt -C 'salt* or kvm*' cmd.run 'systemctl restart openvpn'
 
   update_data
   sleep 20
