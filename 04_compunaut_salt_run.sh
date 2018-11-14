@@ -55,10 +55,6 @@ echo_blue() {
 # Configure mine on master and minions
   minion_wait
   echo_blue "Running compunaut_salt"
-  salt 'salt*' state.apply compunaut_salt.master
-
-  sleep 30
-  minion_wait
   salt '*' state.apply compunaut_salt
 
 ### DEPLOY COMPUNAUT
