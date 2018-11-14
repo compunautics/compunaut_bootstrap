@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -rf /srv/repos/*
+rm -rf /srv/repos
