@@ -52,6 +52,11 @@ echo_blue() {
   sleep 10
   salt-key -A -y
 
+# Update all software on all minions
+  minion_wait
+  echo_blue "Updating all vms"
+  salt 'compunaut*' cmd.run 'apt-get update && apt-get dist-upgrade -y'
+
 # Configure mine on master and minions
   minion_wait
   echo_blue "Running compunaut_salt"
