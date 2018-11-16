@@ -56,6 +56,7 @@ echo_blue() {
   minion_wait
   echo_blue "Updating all vms"
   salt 'compunaut*' cmd.run 'apt-get update && apt-get dist-upgrade -y'
+  sleep 30
 
 # Configure mine on master and minions
   minion_wait
