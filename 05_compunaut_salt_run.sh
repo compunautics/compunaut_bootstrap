@@ -68,9 +68,9 @@ echo_blue() {
 # Create certs, then deploy openvpn
   minion_wait
   update_data
-  sleep 10
+  sleep 20
   update_data
-  sleep 10
+  sleep 20
 
   minion_wait
   echo_blue "Generating openvpn certs for minions"
@@ -120,9 +120,9 @@ echo_blue() {
 
 # Running highstate
   update_data
-  sleep 10
+  sleep 20
   update_data
-  sleep 10
+  sleep 20
 
   minion_wait
   echo_blue "Running highstate on vms"
@@ -137,9 +137,9 @@ echo_blue() {
   salt -C '*salt* or *kvm*' cmd.run 'systemctl restart openvpn'
 
   update_data
-  sleep 10
+  sleep 20
   update_data
-  sleep 10
+  sleep 20
 
   salt -C '*salt* or *kvm*' state.apply compunaut_consul
 
