@@ -66,80 +66,82 @@ echo_blue() {
 ### DEPLOY COMPUNAUT
   echo_blue "DEPLOY COMPUNAUT"
 # Create certs, then deploy openvpn
+  minion_wait
   update_data
-  sleep 20
+  sleep 10
   update_data
-  sleep 20
+  sleep 10
 
   minion_wait
   echo_blue "Generating openvpn certs for minions"
-  salt 'salt*' state.apply compunaut_openvpn.certificates
+  salt '*salt*' state.apply compunaut_openvpn.certificates
 
   minion_wait
   echo_blue "Installing openvpn on vpn servers"
-  salt 'compunaut-vpn*' state.apply compunaut_openvpn,compunaut_keepalived,compunaut_default
+  salt '*compunaut-vpn*' state.apply compunaut_openvpn,compunaut_keepalived,compunaut_default
 
   minion_wait
   echo_blue "Installing openvpn on remaining vms"
-  salt 'compunaut*' state.apply compunaut_openvpn,compunaut_default
+  salt '*compunaut*' state.apply compunaut_openvpn,compunaut_default
 
 # Install databases
   update_data
 
   minion_wait
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
-  salt 'compunaut-db*' state.apply compunaut_mysql,compunaut_influxdb
+  salt '*compunaut-db*' state.apply compunaut_mysql,compunaut_influxdb
 
   update_data
 
   minion_wait
   echo_blue "Setting up Galera"
-  salt 'compunaut-db*' state.apply compunaut_mysql.galera
+  salt '*compunaut-db*' state.apply compunaut_mysql.galera
 
 # Install openldap
   update_data
 
   minion_wait
   echo_blue "Installing OpenLDAP"
-  salt 'compunaut-ldap*' state.apply compunaut_openldap,compunaut_openldap.repl
+  salt '*compunaut-ldap*' state.apply compunaut_openldap,compunaut_openldap.repl
 
 # Install consul
   update_data
 
   minion_wait
   echo_blue "Installing Consul and Dnsmasq"
-  salt 'compunaut*' state.apply compunaut_consul,compunaut_dnsmasq
+  salt '*compunaut*' state.apply compunaut_consul,compunaut_dnsmasq
 
 # Install Grafana
   update_data
 
   minion_wait
   echo_blue "Installing Grafana"
-  salt 'compunaut-monitor*' state.apply compunaut_grafana -b1
+  salt '*compunaut-monitor*' state.apply compunaut_grafana -b1
 
 # Running highstate
   update_data
-  sleep 20
+  sleep 10
   update_data
-  sleep 20
+  sleep 10
 
   minion_wait
   echo_blue "Running highstate on vms"
-  salt 'compunaut*' state.highstate
+  salt '*compunaut*' state.highstate
 
 # Final kvm node setup
   update_data
 
+  minion_wait
   echo_blue "Setting up dnsmasq, openvpn, and consul on kvm nodes"
-  salt -C 'salt* or kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn
-  salt -C 'salt* or kvm*' cmd.run 'systemctl restart openvpn'
+  salt -C '*salt* or *kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn
+  salt -C '*salt* or *kvm*' cmd.run 'systemctl restart openvpn'
 
   update_data
-  sleep 20
+  sleep 10
   update_data
-  sleep 20
+  sleep 10
 
-  salt -C 'salt* or kvm*' state.apply compunaut_consul
+  salt -C '*salt* or *kvm*' state.apply compunaut_consul
 
 # Don't exit until all salt minions are answering
   echo_blue "All minions are now responding. You may run salt commands against them now"
