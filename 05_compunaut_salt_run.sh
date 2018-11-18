@@ -102,7 +102,7 @@ echo_blue() {
 
   minion_wait
   echo_blue "Installing OpenLDAP"
-  salt '*compunaut-ldap*' state.apply compunaut_openldap,compunaut_openldap.repl,compunaut_openldap.memberof
+  salt '*compunaut-ldap*' state.apply compunaut_openldap,compunaut_openldap.memberof,compunaut_openldap.repl
 
 # Install consul
   update_data
