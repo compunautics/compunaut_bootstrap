@@ -42,11 +42,9 @@ salt -C '*salt* or *kvm*' state.highstate
 
 # recover databases
 minion_wait
-update_data
 echo_red "Rebootstrap the MySQL Galera Cluster"
 salt '*db*' state.apply compunaut_mysql.galera
 
 # highstate everything else
-update_data
 echo_red "Highstate the VMs"
 salt '*compunaut*' state.highstate
