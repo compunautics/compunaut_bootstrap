@@ -1,6 +1,18 @@
 #!/bin/bash
 
 # functions
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+minion_wait() {
+  echo -e "${BLUE}\nChecking minion readiness...${NC}"
+  while [[ $(salt '*' test.ping | grep -i "no response") ]]; do
+    echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
+    sleep 5
+  done
+}
+
 update_data() {
   minion_wait
   echo_blue "Updating mine"
@@ -24,13 +36,17 @@ echo_blue() {
 }
 
 # ensure all vms running
+update_data
 echo_red "Highstate the Hypervisors"
 salt -C '*salt* or *kvm*' state.highstate
 
 # recover databases
+minion_wait
+update_data
 echo_red "Rebootstrap the MySQL Galera Cluster"
 salt '*db*' state.apply compunaut_mysql.galera
 
 # highstate everything else
+update_data
 echo_red "Highstate the VMs"
 salt '*compunaut*' state.highstate
