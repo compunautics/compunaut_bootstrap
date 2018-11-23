@@ -56,7 +56,7 @@ echo_blue() {
   minion_wait
   echo_blue "Updating all vms"
   salt 'compunaut*' cmd.run 'apt-get update && apt-get dist-upgrade -y'
-  sleep 30
+  sleep 60
 
 # Configure mine on master and minions
   minion_wait
@@ -68,9 +68,9 @@ echo_blue() {
 # Create certs, then deploy openvpn
   minion_wait
   update_data
-  sleep 30
+  sleep 20
   update_data
-  sleep 30
+  sleep 20
 
   minion_wait
   echo_blue "Generating openvpn certs for minions"
