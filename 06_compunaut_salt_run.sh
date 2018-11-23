@@ -27,7 +27,7 @@ update_data() {
 
 echo_red() {
   local message=${1}
-  echo -e "${RED}\n${message}${NC}"
+  echo -e "${RED}\n${message}...${NC}"
 }
 
 echo_blue() {
@@ -37,14 +37,14 @@ echo_blue() {
 
 # ensure all vms running
 update_data
-echo_red "Highstate the Hypervisors..."
+echo_red "Highstate the Hypervisors"
 salt -C '*salt* or *kvm*' state.highstate
 
 # recover databases
 minion_wait
-echo_red "Rebootstrap the MySQL Galera Cluster..."
+echo_red "Rebootstrap the MySQL Galera Cluster"
 salt '*db*' state.apply compunaut_mysql.galera
 
 # highstate everything else
 echo_red "Highstate the VMs..."
-salt '*compunaut*' state.highstate
+salt -C 'not *salt* and not *kvm*' state.highstate
