@@ -15,12 +15,12 @@ minion_wait() {
 
 update_data() {
   minion_wait
-  echo_blue "Updating mine"
+  echo_blue "Updating mine..."
   salt '*' mine.update
   sleep 10
 
   minion_wait
-  echo_blue "Updating pillar"
+  echo_blue "Updating pillar..."
   salt '*' saltutil.refresh_pillar
   sleep 10
 }
@@ -37,14 +37,14 @@ echo_blue() {
 
 # ensure all vms running
 update_data
-echo_red "Highstate the Hypervisors"
+echo_red "Highstate the Hypervisors..."
 salt -C '*salt* or *kvm*' state.highstate
 
 # recover databases
 minion_wait
-echo_red "Rebootstrap the MySQL Galera Cluster"
+echo_red "Rebootstrap the MySQL Galera Cluster..."
 salt '*db*' state.apply compunaut_mysql.galera
 
 # highstate everything else
-echo_red "Highstate the VMs"
+echo_red "Highstate the VMs..."
 salt '*compunaut*' state.highstate
