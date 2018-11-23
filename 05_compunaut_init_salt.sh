@@ -68,9 +68,9 @@ echo_blue() {
 # Create certs, then deploy openvpn
   minion_wait
   update_data
-  sleep 20
+  sleep 30
   update_data
-  sleep 20
+  sleep 30
 
   minion_wait
   echo_blue "Generating openvpn certs for minions"
