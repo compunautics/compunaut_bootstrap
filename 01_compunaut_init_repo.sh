@@ -27,6 +27,7 @@ echo_blue() {
   # Create base salt directories
   echo_blue "Creating salt directories"
   mkdir -pv /srv/{salt,salt-images,pillar}
+  mkdir -pv /srv/salt/{_states,_modules}
 
   # Clone and link
   echo_blue "Cloning/fetching Compunaut repos from Github and setting up local directories"
@@ -59,6 +60,13 @@ echo_blue() {
     # Link salt dirs
     if [[ ! -L /srv/salt/${sls_dir} ]]; then
       ln -s /srv/repos/${formula}/${sls_dir} /srv/salt/${sls_dir}
+    fi
+    # Copy _states and _modules
+    if [[ -d /srv/repos/${formula}/_states ]]; then 
+      rsync -avP /srv/repos/${formula}/_states/ /srv/salt/_states/
+    fi
+    if [[ -d /srv/repos/${formula}/_modules ]]; then
+      rsync -avP /srv/repos/${formula}/_modules/ /srv/salt/_modules/ 
     fi
   done
 
