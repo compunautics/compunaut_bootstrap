@@ -67,7 +67,6 @@ echo_blue() {
 ### DEPLOY COMPUNAUT
   echo_blue "DEPLOY COMPUNAUT"
 # Create certs, then deploy openvpn
-  minion_wait
   update_data
   sleep 20
   update_data
@@ -118,6 +117,13 @@ echo_blue() {
   minion_wait
   echo_blue "Installing Grafana"
   salt '*monitor*' state.apply compunaut_grafana -b1
+
+# Install Gitlab
+  update_data
+
+  minion_wait
+  echo_blue "Installing Gitlab"
+  salt '*gitlab*' state.apply compunaut_gitlab
 
 # Running highstate
   update_data
