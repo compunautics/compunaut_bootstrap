@@ -22,11 +22,6 @@ update_data() {
   echo_blue "Updating pillar"
   salt '*' saltutil.refresh_pillar
   sleep 10
-
-  minion_wait
-  echo_blue "Syncing custom modules and states"
-  salt '*' saltutil.sync_all
-  sleep 10
 }
 
 echo_red() {
