@@ -52,12 +52,12 @@ echo_blue() {
   echo_blue "Configuring local salt minion to talk to salt master"
   sed -ri 's/^127.0.0.1\s+localhost$/127.0.0.1\tlocalhost\ salt/g' /etc/hosts
   systemctl restart salt-minion
-  sleep 15
+  sleep 60
   salt-key -A -y
 
 # Set up KVM
   echo_blue "Setting up salt master hypervisor"
   salt 'salt*' state.apply compunaut_hypervisor.ssh,compunaut_hypervisor.kvm
-  sleep 15
+  sleep 60
 
   salt 'salt*' state.apply compunaut_hypervisor.network,compunaut_salt.master
