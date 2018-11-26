@@ -20,8 +20,8 @@ update_data() {
 
   minion_wait
   echo_blue "Updating pillar"
-  salt '*' saltutil.refresh_pillar
-  sleep 20
+  salt '*' saltutil.refresh_pillar --async
+  sleep 60
 }
 
 echo_red() {
