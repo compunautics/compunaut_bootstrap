@@ -1,0 +1,34 @@
+minion_wait() {
+  echo -e "${BLUE}\nChecking minion readiness...${NC}"
+  while [[ $(salt '*' test.ping | grep -i "no response") ]]; do
+    echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
+    sleep 5
+  done
+}
+
+update_data() {
+  minion_wait
+  echo_blue "Updating mine"
+  salt '*' mine.update --async
+  sleep 20
+
+  minion_wait
+  echo_blue "Updating pillar"
+  salt '*' saltutil.refresh_pillar --async
+  sleep 60
+
+  minion_wait
+  echo_blue "Updating mine"
+  salt '*' mine.update --async
+  sleep 20
+}
+
+echo_red() {
+  local message=${1}
+  echo -e "${RED}\n${message}...${NC}"
+}
+
+echo_blue() {
+  local message=${1}
+  echo -e "${BLUE}\n${message}...${NC}"
+}

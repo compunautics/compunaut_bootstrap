@@ -4,35 +4,8 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 ### FUNCTIONS
-minion_wait() {
-  echo -e "${BLUE}\nChecking minion readiness...${NC}"
-  while [[ $(salt '*' test.ping | grep -i "no response") ]]; do
-    echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
-    sleep 5
-  done
-}
-
-update_data() {
-  minion_wait
-  echo_blue "Updating mine"
-  salt '*' mine.update
-  sleep 20
-
-  minion_wait
-  echo_blue "Updating pillar"
-  salt '*' saltutil.refresh_pillar --async
-  sleep 60
-}
-
-echo_red() {
-  local message=${1}
-  echo -e "${RED}\n${message}...${NC}"
-}
-
-echo_blue() {
-  local message=${1}
-  echo -e "${BLUE}\n${message}...${NC}"
-}
+cd "${0%/*}"
+source ./compunaut_functions
 
 ### HYPERVISOR SETUP
 # Highstate to set up the infrastructure and vms
@@ -70,8 +43,6 @@ echo_blue() {
 ### DEPLOY COMPUNAUT
   echo_blue "DEPLOY COMPUNAUT"
 # Create certs, then deploy openvpn
-  update_data
-  sleep 60
   update_data
   sleep 60
 
@@ -142,8 +113,6 @@ echo_blue() {
   salt -C '*salt* or *kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn,compunaut_openldap,compunaut_sssd
   salt -C '*salt* or *kvm*' cmd.run 'systemctl restart openvpn'
 
-  update_data
-  sleep 60
   update_data
   sleep 60
 
