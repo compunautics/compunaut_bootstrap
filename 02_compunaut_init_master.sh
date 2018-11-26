@@ -57,4 +57,7 @@ echo_blue() {
 
 # Set up KVM
   echo_blue "Setting up salt master hypervisor"
-  salt 'salt*' state.apply compunaut_hypervisor.ssh,compunaut_hypervisor.kvm,compunaut_hypervisor.network,compunaut_salt.master
+  salt 'salt*' state.apply compunaut_hypervisor.ssh,compunaut_hypervisor.kvm
+  sleep 15
+
+  salt 'salt*' state.apply compunaut_hypervisor.network,compunaut_salt.master
