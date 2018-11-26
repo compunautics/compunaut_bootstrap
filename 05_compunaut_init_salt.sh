@@ -16,12 +16,12 @@ update_data() {
   minion_wait
   echo_blue "Updating mine"
   salt '*' mine.update
-  sleep 10
+  sleep 30
 
   minion_wait
   echo_blue "Updating pillar"
   salt '*' saltutil.refresh_pillar
-  sleep 10
+  sleep 30
 }
 
 echo_red() {
@@ -68,9 +68,9 @@ echo_blue() {
   echo_blue "DEPLOY COMPUNAUT"
 # Create certs, then deploy openvpn
   update_data
-  sleep 20
+  sleep 60
   update_data
-  sleep 20
+  sleep 60
 
   minion_wait
   echo_blue "Generating openvpn certs for minions"
@@ -127,9 +127,9 @@ echo_blue() {
 
 # Running highstate
   update_data
-  sleep 20
+  sleep 60
   update_data
-  sleep 20
+  sleep 60
 
   minion_wait
   echo_blue "Running highstate on vms"
@@ -144,9 +144,9 @@ echo_blue() {
   salt -C '*salt* or *kvm*' cmd.run 'systemctl restart openvpn'
 
   update_data
-  sleep 20
+  sleep 60
   update_data
-  sleep 20
+  sleep 60
 
   salt -C '*salt* or *kvm*' state.apply compunaut_consul
 
