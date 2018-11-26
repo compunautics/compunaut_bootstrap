@@ -1,18 +1,7 @@
 #!/bin/bash
-RED='\033[0;31m'
-BLUE='\033[0;34m'
-NC='\033[0m'
-
 ### FUNCTIONS
-echo_red() {
-  local message=${1}
-  echo -e "${RED}\n${message}${NC}"
-}
-
-echo_blue() {
-  local message=${1}
-  echo -e "${BLUE}\n${message}...${NC}"
-}
+cd "${0%/*}"
+source ./compunaut_functions
 
 ### INITIAL SALT MASTER SETUP
 # Update sudoers so that sudo group members don't need a password

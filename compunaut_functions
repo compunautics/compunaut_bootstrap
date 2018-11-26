@@ -1,3 +1,7 @@
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
 minion_wait() {
   echo -e "${BLUE}\nChecking minion readiness...${NC}"
   while [[ $(salt '*' test.ping | grep -i "no response") ]]; do
