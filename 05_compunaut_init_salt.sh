@@ -20,7 +20,7 @@ update_data() {
 
   minion_wait
   echo_blue "Updating pillar"
-  salt '*' saltutil.refresh_pillar
+  salt '*' saltutil.refresh_pillar -b8
   sleep 30
 }
 
@@ -61,7 +61,7 @@ echo_blue() {
 # Configure mine on master and minions
   minion_wait
   echo_blue "Running compunaut_salt"
-  salt '*' state.apply compunaut_salt
+  salt '*' state.apply compunaut_salt -b8
   sleep 60
 
 ### DEPLOY COMPUNAUT
