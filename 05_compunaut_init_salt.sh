@@ -7,10 +7,12 @@ source ./compunaut_functions
 # Highstate to set up the infrastructure and vms
   update_data
 
-  echo_blue "SET UP HYPERVISOR"
+  minion_wait
+  echo_blue "SET UP HYPERVISORS"
   salt -C '*salt* or *kvm*' state.highstate # now run highstate
 
 # Log into vms and configure salt
+  minion_wait
   echo_blue "Log into vms and configure hostname and salt"
   salt -C '*salt* or *kvm*' state.apply compunaut_hypervisor.salt_vms
 
