@@ -55,7 +55,7 @@ echo_blue() {
 # Update all software on all minions
   minion_wait
   echo_blue "Updating all vms"
-  salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get dist-upgrade -y'
+  salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get dist-upgrade -y' -b8
   sleep 60
 
 # Configure mine on master and minions
