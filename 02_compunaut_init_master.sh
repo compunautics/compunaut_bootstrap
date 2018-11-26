@@ -54,6 +54,7 @@ echo_blue() {
   systemctl restart salt-minion
   sleep 60
   salt-key -A -y
+  sleep 60
 
 # Set up KVM
   echo_blue "Setting up salt master hypervisor"
