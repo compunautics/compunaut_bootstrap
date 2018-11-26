@@ -64,6 +64,8 @@ echo_blue() {
   echo_blue "Running compunaut_salt"
   salt '*' state.apply compunaut_salt
   sleep 60
+  salt '*'  saltutil.sync_all
+  sleep 60
 
 ### DEPLOY COMPUNAUT
   echo_blue "DEPLOY COMPUNAUT"
