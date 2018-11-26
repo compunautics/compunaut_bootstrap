@@ -119,15 +119,11 @@ echo_blue() {
   salt '*monitor*' state.apply compunaut_grafana -b1
 
 # Install Gitlab
-  update_data
-
   minion_wait
   echo_blue "Installing Gitlab"
   salt '*gitlab*' state.apply compunaut_gitlab
 
 # Running highstate
-  update_data
-  sleep 60
   update_data
   sleep 60
 
