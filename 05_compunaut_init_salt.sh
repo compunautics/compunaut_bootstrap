@@ -16,12 +16,12 @@ update_data() {
   minion_wait
   echo_blue "Updating mine"
   salt '*' mine.update
-  sleep 30
+  sleep 20
 
   minion_wait
   echo_blue "Updating pillar"
-  salt '*' saltutil.refresh_pillar -b8
-  sleep 30
+  salt '*' saltutil.refresh_pillar
+  sleep 20
 }
 
 echo_red() {
@@ -49,19 +49,20 @@ echo_blue() {
 # Accept all salt keys
   echo_blue "SET UP COMPUNAUT MINIONS"
   echo_blue "Accept salt keys from vms"
-  sleep 10
+  sleep 20
   salt-key -A -y
+  sleep 60
 
 # Update all software on all minions
   minion_wait
   echo_blue "Updating all vms"
-  salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get dist-upgrade -y' -b8
+  salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get dist-upgrade -y'
   sleep 60
 
 # Configure mine on master and minions
   minion_wait
   echo_blue "Running compunaut_salt"
-  salt '*' state.apply compunaut_salt -b8
+  salt '*' state.apply compunaut_salt
   sleep 60
 
 ### DEPLOY COMPUNAUT
