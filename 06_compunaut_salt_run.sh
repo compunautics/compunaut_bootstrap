@@ -8,12 +8,13 @@ source ./compunaut_functions
 update_data
 echo_red "Highstate the Hypervisors"
 salt -C '*salt* or *kvm*' state.highstate
+sleep 20
 
 # Salt all VMs
 minion_wait
 echo_red "Salt all VMs"
 salt -C '*salt* or *kvm*' state.apply compunaut_hypervisor.salt_vms
-sleep 10
+sleep 20
 salt-key -A -y
 
 # Update all VMs
