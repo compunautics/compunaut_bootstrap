@@ -13,23 +13,22 @@ salt -C '*salt* or *kvm*' state.highstate
 minion_wait
 echo_red "Salt all VMs"
 salt -C '*salt* or *kvm*' state.apply compunaut_hypervisor.salt_vms
-
-sleep 30
+sleep 10
 salt-key -A -y
 
 # Update all VMs
 minion_wait
 echo_red "Update targeted VM"
 salt -C "not *salt* and not *kvm*" cmd.run 'apt-get update && apt-get dist-upgrade -y'
-sleep 90
+sleep 60
 
 # Configure Mine on all Nodes
 update_data
 echo_red "Configure mine on all Nodes"
 salt "*" state.apply compunaut_salt.minion
-sleep 60
+sleep 30
 salt "*" saltutil.sync_all
-sleep 60
+sleep 30
 
 # Highstate the VMs
 update_data
