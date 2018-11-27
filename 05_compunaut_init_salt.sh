@@ -8,7 +8,7 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  echo_blue "SET UP HYPERVISORS"
+  echo_red "SET UP HYPERVISORS"
   salt -C '*salt* or *kvm*' state.highstate # now run highstate
 
 # Log into vms and configure salt
@@ -18,7 +18,7 @@ source ./compunaut_functions
 
 ### MINION SETUP
 # Accept all salt keys
-  echo_blue "SET UP COMPUNAUT MINIONS"
+  echo_red "SET UP COMPUNAUT MINIONS"
   echo_blue "Accept salt keys from vms"
   sleep 20
   salt-key -A -y
@@ -39,7 +39,7 @@ source ./compunaut_functions
   sleep 60
 
 ### DEPLOY COMPUNAUT
-  echo_blue "DEPLOY COMPUNAUT"
+  echo_red "DEPLOY OPENVPN"
 # Create certs, then deploy openvpn
   update_data
   sleep 60
@@ -60,6 +60,7 @@ source ./compunaut_functions
   update_data
 
   minion_wait
+  echo_red "INSTALL DATABASES"
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
   salt '*db*' state.apply compunaut_mysql,compunaut_influxdb
 
@@ -73,6 +74,7 @@ source ./compunaut_functions
   update_data
 
   minion_wait
+  echo_red "INSTALL LDAP"
   echo_blue "Installing OpenLDAP"
   salt '*ldap*' state.apply compunaut_openldap,compunaut_openldap.memberof,compunaut_openldap.repl
 
@@ -80,19 +82,19 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  echo_blue "Installing Consul and Dnsmasq"
+  echo_red "INSTALL CONSUL AND DNSMASQ"
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_consul,compunaut_dnsmasq
 
 # Install Grafana
   update_data
 
   minion_wait
-  echo_blue "Installing Grafana"
+  echo_red "INSTALL GRAFANA"
   salt '*monitor*' state.apply compunaut_grafana -b1
 
 # Install Gitlab
   minion_wait
-  echo_blue "Installing Gitlab"
+  echo_red "INSTALL GITLAB"
   salt '*gitlab*' state.apply compunaut_gitlab
 
 # Running highstate
@@ -100,13 +102,14 @@ source ./compunaut_functions
   sleep 60
 
   minion_wait
-  echo_blue "Running highstate on vms"
+  echo_red "HIGHSTATE THE VMS"
   salt -C 'not *salt* and not *kvm*' state.highstate
 
 # Final kvm node setup
   update_data
 
   minion_wait
+  echo_red "FINAL SETUP"
   echo_blue "Setting up dnsmasq, openvpn, and consul on kvm nodes"
   salt -C '*salt* or *kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn,compunaut_openldap,compunaut_sssd
   salt -C '*salt* or *kvm*' cmd.run 'systemctl restart openvpn'
