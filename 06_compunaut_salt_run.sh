@@ -41,11 +41,12 @@ update_data
 echo_red "Highstate the VMs again"
 salt -C 'not *salt* and not *kvm*' state.highstate
 
+# Recover LDAP
+update_data
+echo_red "Recover LDAP"
+salt '*ldap*' state.apply compunaut_openldap,compunaut_openldap.memberof,compunaut_openldap.repl
+
 # Bootstrap the MySQL Galera Cluster
 update_data
 echo_red "Bootstrap the MySQL Galera Cluster"
 salt '*db*' state.apply compunaut_mysql.galera
-
-# Recover LDAP
-echo_red "Recover LDAP"
-salt '*ldap*' state.apply compunaut_openldap,compunaut_openldap.memberof,compunaut_openldap.repl
