@@ -20,20 +20,20 @@ source ./compunaut_functions
 # Accept all salt keys
   echo_red "SET UP COMPUNAUT MINIONS"
   echo_blue "Accept salt keys from vms"
-  sleep 20
+  sleep 30
   salt-key -A -y
-  sleep 60
+  sleep 30
 
 # Update all software on all minions
   minion_wait
   echo_blue "Updating all vms"
   salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get dist-upgrade -y'
-  sleep 60
+  sleep 90
 
 # Configure mine on master and minions
   minion_wait
   echo_blue "Running compunaut_salt"
-  salt '*' state.apply compunaut_salt
+  salt '*' state.apply compunaut_salt.minion
   sleep 60
   salt '*'  saltutil.sync_all
   sleep 60
