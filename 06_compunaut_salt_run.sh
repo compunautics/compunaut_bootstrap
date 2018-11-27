@@ -36,15 +36,15 @@ update_data
 echo_red "Highstate the VMs"
 salt -C 'not *salt* and not *kvm*' state.highstate
 
-# Bootstrap the MySQL Galera Cluster
-update_data
-echo_red "Bootstrap the MySQL Galera Cluster"
-salt '*db*' state.apply compunaut_mysql.galera
-
 # Highstate the VMs again
 update_data
 echo_red "Highstate the VMs again"
 salt -C 'not *salt* and not *kvm*' state.highstate
+
+# Bootstrap the MySQL Galera Cluster
+update_data
+echo_red "Bootstrap the MySQL Galera Cluster"
+salt '*db*' state.apply compunaut_mysql.galera
 
 # Recover LDAP
 echo_red "Recover LDAP"
