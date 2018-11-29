@@ -97,6 +97,11 @@ source ./compunaut_functions
   echo_red "INSTALL GITLAB"
   salt '*gitlab*' state.apply compunaut_gitlab
 
+# Install Rundeck
+  minion_wait
+  echo_red "INSTALL RUNDECK"
+  salt '*rundeck*' state.apply compunaut_rundeck -b1
+
 # Running highstate
   update_data
   sleep 60
