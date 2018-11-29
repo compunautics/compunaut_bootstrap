@@ -19,7 +19,7 @@ salt-key -A -y
 
 # Update all VMs
 minion_wait
-echo_red "Update targeted VM"
+echo_red "Update VMs"
 salt -C "not *salt* and not *kvm*" cmd.run 'apt-get update && apt-get dist-upgrade -y'
 sleep 60
 
