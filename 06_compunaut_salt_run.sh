@@ -53,5 +53,6 @@ salt '*db*' state.apply compunaut_mysql.galera
 
 # Highstate the VMs one last time
 update_data
+sleep 30
 echo_red "Highstate the VMs one last time"
 salt -C 'not *salt* and not *kvm*' state.highstate
