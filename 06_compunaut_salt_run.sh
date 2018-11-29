@@ -50,3 +50,8 @@ salt '*ldap*' state.apply compunaut_openldap,compunaut_openldap.memberof,compuna
 update_data
 echo_red "Bootstrap the MySQL Galera Cluster"
 salt '*db*' state.apply compunaut_mysql.galera
+
+# Highstate the VMs one last time
+update_data
+echo_red "Highstate the VMs one last time"
+salt -C 'not *salt* and not *kvm*' state.highstate
