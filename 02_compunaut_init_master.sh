@@ -47,7 +47,7 @@ source ./compunaut_functions
 
 # Set up KVM
   echo_blue "Setting up salt master hypervisor"
-  salt 'salt*' state.apply compunaut_hypervisor.ssh,compunaut_hypervisor.kvm
+  salt 'salt*' state.apply compunaut_hypervisor.ssh,compunaut_hypervisor.kvm --state_output=changes
   sleep 60
 
-  salt 'salt*' state.apply compunaut_hypervisor.network,compunaut_salt.master
+  salt 'salt*' state.apply compunaut_hypervisor.network,compunaut_salt.master --state_output=changes
