@@ -45,17 +45,14 @@ source ./compunaut_functions
   sleep 60
 
   minion_wait
-  sleep 15
   echo_blue "Generating openvpn certs for minions"
   salt '*salt*' state.apply compunaut_openvpn.certificates --state_output=mixed
 
   minion_wait
-  sleep 15
   echo_blue "Installing openvpn on vpn servers"
   salt '*vpn*' state.apply compunaut_openvpn,compunaut_keepalived,compunaut_default --state_output=mixed
 
   minion_wait
-  sleep 15
   echo_blue "Installing openvpn on remaining vms"
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_openvpn,compunaut_default --state_output=mixed
 
@@ -63,7 +60,6 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  sleep 15
   echo_red "INSTALL DATABASES"
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
   salt '*db*' state.apply compunaut_mysql,compunaut_influxdb --state_output=mixed
@@ -71,7 +67,6 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  sleep 15
   echo_blue "Setting up Galera"
   salt '*db*' state.apply compunaut_mysql.galera --state_output=mixed
 
@@ -79,7 +74,6 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  sleep 15
   echo_red "INSTALL LDAP"
   echo_blue "Installing OpenLDAP"
   salt '*ldap*' state.apply compunaut_openldap,compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
@@ -88,7 +82,6 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  sleep 15
   echo_red "INSTALL CONSUL AND DNSMASQ"
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_consul,compunaut_dnsmasq --state_output=mixed
 
@@ -96,19 +89,16 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  sleep 15
   echo_red "INSTALL GRAFANA"
   salt '*monitor*' state.apply compunaut_grafana -b1 --state_output=mixed
 
 # Install Gitlab
   minion_wait
-  sleep 15
   echo_red "INSTALL GITLAB"
   salt '*gitlab*' state.apply compunaut_gitlab --state_output=mixed
 
 # Install Rundeck
   minion_wait
-  sleep 15
   echo_red "INSTALL RUNDECK"
   salt '*rundeck*' state.apply compunaut_rundeck -b1 --state_output=mixed
 
@@ -117,7 +107,6 @@ source ./compunaut_functions
   sleep 60
 
   minion_wait
-  sleep 15
   echo_red "HIGHSTATE THE VMS"
   echo_blue "Silently install telegraf everywhere"
   salt '*' state.apply compunaut_telegraf --state_output=terse
@@ -128,7 +117,6 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  sleep 15
   echo_red "FINAL SETUP"
   echo_blue "Setting up dnsmasq, openvpn, and consul on kvm nodes"
   salt -C '*salt* or *kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn,compunaut_openldap,compunaut_sssd --state_output=mixed
