@@ -90,17 +90,17 @@ source ./compunaut_functions
 
   minion_wait
   echo_red "INSTALL GRAFANA"
-  salt '*monitor*' state.apply compunaut_grafana -b1 --state_output=mixed
+  salt '*monitor*' state.apply compunaut_grafana -b1 --state_output=mixed --async
 
 # Install Gitlab
   minion_wait
   echo_red "INSTALL GITLAB"
-  salt '*gitlab*' state.apply compunaut_gitlab --state_output=mixed
+  salt '*gitlab*' state.apply compunaut_gitlab --state_output=mixed --async
 
 # Install Rundeck
   minion_wait
   echo_red "INSTALL RUNDECK"
-  salt '*rundeck*' state.apply compunaut_rundeck -b1 --state_output=mixed
+  salt '*rundeck*' state.apply compunaut_rundeck -b1 --state_output=mixed --async
 
 # Running highstate
   update_data
