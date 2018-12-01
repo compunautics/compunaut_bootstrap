@@ -9,7 +9,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_red "SET UP HYPERVISORS"
-  salt -C '*salt* or *kvm*' state.highstate --state_output=changes # now run highstate
+  salt -C '*salt* or *kvm*' state.highstate --state_output=changes
 
 # Log into vms and configure salt
   minion_wait
@@ -40,7 +40,6 @@ source ./compunaut_functions
 
 ### DEPLOY COMPUNAUT
   echo_red "DEPLOY OPENVPN"
-# Create certs, then deploy openvpn
   update_data
   sleep 60
 
