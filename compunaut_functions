@@ -8,6 +8,7 @@ minion_wait() {
     echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
     sleep 5
   done
+  sleep 20
 }
 
 update_data() {
