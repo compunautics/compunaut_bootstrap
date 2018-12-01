@@ -108,6 +108,9 @@ source ./compunaut_functions
 
   minion_wait
   echo_red "HIGHSTATE THE VMS"
+  echo_blue "Silently install telegraf everywhere"
+  salt '*' state.apply compunaut_telegraf -l quiet
+  echo_blue "Run highstate"
   salt -C 'not *salt* and not *kvm*' state.highstate
 
 # Final kvm node setup
