@@ -27,8 +27,8 @@ source ./compunaut_functions
 # Update all software on all minions
   minion_wait
   echo_blue "Updating all vms"
-  salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get dist-upgrade -y'
-  sleep 90
+  salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get dist-upgrade -y' --async
+  sleep 180
 
 # Configure mine on master and minions
   minion_wait
