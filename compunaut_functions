@@ -4,8 +4,12 @@ NC='\033[0m'
 
 minion_wait() {
   echo -e "${BLUE}\nChecking minion readiness...${NC}"
-  while [[ $(salt '*' test.ping | grep -i "no response") ]]; do
+  while [[ $(salt '*' test.ping | grep -iP "no response|not connected") ]]; do
     echo -e "${BLUE}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
+    sleep 5
+  done
+  while [[ $(salt '*' saltutil.running | grep -i "jid") ]]; do
+    echo -e "${BLUE}Some minions are running jobs...\nWaiting 5 seconds...${NC}"
     sleep 5
   done
   sleep 20
