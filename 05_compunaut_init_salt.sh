@@ -108,15 +108,15 @@ source ./compunaut_functions
 
   echo_blue "Apply states"
   salt '*gitlab*' state.apply compunaut_gitlab --async
+  minion_wait
 
 # Running highstate
   echo_red "HIGHSTATE THE VMS"
   update_data
-  sleep 60
 
   minion_wait
   echo_blue "Install telegraf"
-  salt '*' state.apply compunaut_telegraf --state_output=terse
+  salt '*' state.apply compunaut_telegraf --state_output=mixed
 
   echo_blue "Run highstate"
   salt -C 'not *salt* and not *kvm*' state.highstate --state_output=mixed
