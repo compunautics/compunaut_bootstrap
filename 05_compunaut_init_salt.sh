@@ -21,6 +21,7 @@ source ./compunaut_functions
   echo_red "SET UP COMPUNAUT MINIONS"
   echo_blue "Accept salt keys from vms"
   sleep 30
+
   salt-key -A -y
   sleep 30
 
@@ -90,19 +91,19 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  salt '*monitor*' state.apply compunaut_grafana -b1 --state_output=mixed --async
+  salt '*monitor*' state.apply compunaut_grafana --async
 
 # Install Rundeck
   echo_red "INSTALL RUNDECK"
 
   minion_wait
-  salt '*rundeck*' state.apply compunaut_rundeck -b1 --state_output=mixed --async
+  salt '*rundeck*' state.apply compunaut_rundeck --async
 
 # Install Gitlab
   echo_red "INSTALL GITLAB"
 
   minion_wait
-  salt '*gitlab*' state.apply compunaut_gitlab --state_output=mixed --async
+  salt '*gitlab*' state.apply compunaut_gitlab --async
 
 # Running highstate
   echo_red "HIGHSTATE THE VMS"
