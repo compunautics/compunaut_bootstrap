@@ -99,14 +99,12 @@ source ./compunaut_functions
 # Install Rundeck
   echo_red "INSTALL RUNDECK"
 
-  minion_wait
   echo_blue "Apply states"
   salt '*rundeck*' state.apply compunaut_rundeck --async
 
 # Install Gitlab
   echo_red "INSTALL GITLAB"
 
-  minion_wait
   echo_blue "Apply states"
   salt '*gitlab*' state.apply compunaut_gitlab --async
 
