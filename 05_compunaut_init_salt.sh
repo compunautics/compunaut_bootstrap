@@ -79,6 +79,7 @@ source ./compunaut_functions
   minion_wait
   echo_blue "Apply states"
   salt '*ldap*' state.apply compunaut_openldap,compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
+  salt '*ldap*' state.apply compunaut_openldap --state_output=mixed
 
 # Install consul
   echo_red "INSTALL CONSUL AND DNSMASQ"
