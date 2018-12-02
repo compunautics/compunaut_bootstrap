@@ -102,7 +102,7 @@ source ./compunaut_functions
   echo_red "INSTALL GITLAB"
 
   minion_wait
-  salt '*gitlab*' state.apply compunaut_gitlab --state_output=mixed
+  salt '*gitlab*' state.apply compunaut_gitlab --state_output=mixed --async
 
 # Running highstate
   echo_red "HIGHSTATE THE VMS"
