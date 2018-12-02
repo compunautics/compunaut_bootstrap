@@ -9,6 +9,7 @@ source ./compunaut_functions
   update_data
 
   minion_wait
+  echo_blue "Highstate the kvm nodes"
   salt -C '*salt* or *kvm*' state.highstate --state_output=mixed
 
 # Log into vms and configure salt
@@ -76,7 +77,7 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  echo_blue "Installing OpenLDAP"
+  echo_blue "Apply states"
   salt '*ldap*' state.apply compunaut_openldap,compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
 
 # Install consul
@@ -84,6 +85,7 @@ source ./compunaut_functions
   update_data
 
   minion_wait
+  echo_blue "Apply states"
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_consul,compunaut_dnsmasq --state_output=mixed
 
 # Install Grafana
@@ -91,18 +93,21 @@ source ./compunaut_functions
   update_data
 
   minion_wait
+  echo_blue "Apply states"
   salt '*monitor*' state.apply compunaut_grafana --async
 
 # Install Rundeck
   echo_red "INSTALL RUNDECK"
 
   minion_wait
+  echo_blue "Apply states"
   salt '*rundeck*' state.apply compunaut_rundeck --async
 
 # Install Gitlab
   echo_red "INSTALL GITLAB"
 
   minion_wait
+  echo_blue "Apply states"
   salt '*gitlab*' state.apply compunaut_gitlab --async
 
 # Running highstate
