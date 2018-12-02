@@ -1,3 +1,4 @@
 #!/bin/bash
 
-salt '*gitlab*' pillar.get gitlab:server:initial_root_password
+salt '*gitlab*' pillar.get compunaut:global_vars:rundeck_admin_user
+salt '*gitlab*' pillar.get compunaut:global_vars:rundeck_admin_unencrypted_password
