@@ -12,7 +12,7 @@ minion_wait() {
     echo -e "${BLUE}Some minions are running jobs...\nWaiting 5 seconds...${NC}"
     sleep 5
   done
-  sleep 10
+  sleep 20
 }
 
 update_data() {
