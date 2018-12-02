@@ -5,10 +5,10 @@ source ./compunaut_functions
 
 ### HYPERVISOR SETUP
 # Highstate to set up the infrastructure and vms
+  echo_red "SET UP HYPERVISORS"
   update_data
 
   minion_wait
-  echo_red "SET UP HYPERVISORS"
   salt -C '*salt* or *kvm*' state.highstate --state_output=mixed
 
 # Log into vms and configure salt
@@ -28,13 +28,13 @@ source ./compunaut_functions
   minion_wait
   echo_blue "Updating all vms"
   salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get dist-upgrade -y' --async
-  sleep 180
+  sleep 210
 
 # Configure mine on master and minions
   minion_wait
   echo_blue "Running compunaut_salt"
   salt '*' state.apply compunaut_salt.minion --state_output=mixed
-  sleep 60
+
   minion_wait
   salt '*'  saltutil.sync_all
   sleep 60
@@ -57,10 +57,10 @@ source ./compunaut_functions
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_openvpn,compunaut_default --state_output=mixed
 
 # Install databases
+  echo_red "INSTALL DATABASES"
   update_data
 
   minion_wait
-  echo_red "INSTALL DATABASES"
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
   salt '*db*' state.apply compunaut_mysql,compunaut_influxdb --state_output=mixed
 
@@ -71,61 +71,67 @@ source ./compunaut_functions
   salt '*db*' state.apply compunaut_mysql.galera --state_output=mixed
 
 # Install openldap
+  echo_red "INSTALL LDAP"
   update_data
 
   minion_wait
-  echo_red "INSTALL LDAP"
   echo_blue "Installing OpenLDAP"
   salt '*ldap*' state.apply compunaut_openldap,compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
 
 # Install consul
+  echo_red "INSTALL CONSUL AND DNSMASQ"
   update_data
 
   minion_wait
-  echo_red "INSTALL CONSUL AND DNSMASQ"
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_consul,compunaut_dnsmasq --state_output=mixed
 
 # Install Grafana
+  echo_red "INSTALL GRAFANA"
   update_data
 
   minion_wait
-  echo_red "INSTALL GRAFANA"
   salt '*monitor*' state.apply compunaut_grafana -b1 --state_output=mixed --async
 
 # Install Rundeck
-  minion_wait
   echo_red "INSTALL RUNDECK"
+
+  minion_wait
   salt '*rundeck*' state.apply compunaut_rundeck -b1 --state_output=mixed --async
 
 # Install Gitlab
-  minion_wait
   echo_red "INSTALL GITLAB"
+
+  minion_wait
   salt '*gitlab*' state.apply compunaut_gitlab --state_output=mixed
 
 # Running highstate
+  echo_red "HIGHSTATE THE VMS"
   update_data
   sleep 60
 
   minion_wait
-  echo_red "HIGHSTATE THE VMS"
-  echo_blue "Silently install telegraf everywhere"
+  echo_blue "Install telegraf"
   salt '*' state.apply compunaut_telegraf --state_output=terse
+
   echo_blue "Run highstate"
   salt -C 'not *salt* and not *kvm*' state.highstate --state_output=mixed
 
 # Final kvm node setup
+  echo_red "FINAL SETUP"
   update_data
 
   minion_wait
-  echo_red "FINAL SETUP"
-  echo_blue "Setting up dnsmasq, openvpn, and consul on kvm nodes"
+  echo_blue "Setting up dnsmasq, openvpn, openldap, and sssd on kvm nodes"
   salt -C '*salt* or *kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn,compunaut_openldap,compunaut_sssd --state_output=mixed
+
+  minion_wait
   echo_blue "Restart OpenVPN"
   salt -C '*salt* or *kvm*' cmd.run 'systemctl restart openvpn'
 
   update_data
-  sleep 60
 
+  minion_wait
+  echo_blue "Setting up consul on kvm nodes"
   salt -C '*salt* or *kvm*' state.apply compunaut_consul --state_output=mixed
 
 # Don't exit until all salt minions are answering
