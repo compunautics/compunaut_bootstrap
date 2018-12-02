@@ -30,7 +30,7 @@ source ./compunaut_functions
   minion_wait
   echo_blue "Updating all vms"
   salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get install salt-minion -y' --async
-  sleep 240
+  sleep 120
 
 # Configure mine on master and minions
   minion_wait
