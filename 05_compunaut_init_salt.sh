@@ -73,7 +73,6 @@ source ./compunaut_functions
 
 # Install consul
   echo_red "INSTALL CONSUL AND DNSMASQ"
-  update_data
 
   minion_wait
   echo_blue "Applying states"
@@ -81,7 +80,6 @@ source ./compunaut_functions
 
 # Install Grafana
   echo_red "INSTALL GRAFANA"
-  update_data
 
   minion_wait
   echo_blue "Applying states"
@@ -102,7 +100,6 @@ source ./compunaut_functions
 
 # Running highstate
   echo_red "HIGHSTATE THE VMS"
-  update_data
 
   minion_wait
   echo_blue "Installing telegraf"
