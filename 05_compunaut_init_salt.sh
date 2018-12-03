@@ -46,7 +46,9 @@ source ./compunaut_functions
   update_data
   sleep 60
 
-  minion_wait
+  echo_blue "Install keepalived on VPN servers"
+  salt '*vpn*' state.apply compunaut_keepalived --async
+
   echo_blue "Generating openvpn certs for minions"
   salt '*salt*' state.apply compunaut_openvpn.certificates --state_output=mixed
 
@@ -60,10 +62,10 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
-  salt '*db*' state.apply compunaut_mysql,compunaut_influxdb --state_output=mixed --async
+  salt '*db*' state.apply compunaut_mysql,compunaut_influxdb --async
 
   echo_blue "Installing LDAP"
-  salt '*ldap*' state.highstate --state_output=mixed --async
+  salt '*ldap*' state.highstate --async
 
   update_data
 
@@ -71,12 +73,12 @@ source ./compunaut_functions
   echo_blue "Setting up Galera"
   salt '*db*' state.apply compunaut_mysql.galera --state_output=mixed
 
-# Install consul
+# Install consul and dnsmasq
   echo_red "INSTALL CONSUL AND DNSMASQ"
 
   minion_wait
   echo_blue "Applying states"
-  salt -C 'not *salt* and not *kvm*' state.apply compunaut_consul,compunaut_dnsmasq --state_output=mixed
+  salt '*' state.apply compunaut_consul,compunaut_dnsmasq --state_output=mixed
 
 # Install Grafana
   echo_red "INSTALL GRAFANA"
@@ -96,15 +98,18 @@ source ./compunaut_functions
 
   echo_blue "Applying states"
   salt '*gitlab*' state.apply compunaut_gitlab --async
+
+# Install Haproxy
+  echo_red "INSTALL HAPROXY"
+
+  echo_blue "Applying states"
+  salt '*proxy*' state.apply compunaut_keepalived,compunaut_haproxy --async
   minion_wait
 
 # Running highstate
   echo_red "HIGHSTATE THE VMS"
 
   minion_wait
-  echo_blue "Installing telegraf"
-  salt '*' state.apply compunaut_telegraf --state_output=mixed
-
   echo_blue "Running highstate"
   salt -C 'not *salt* and not *kvm*' state.highstate --state_output=mixed
 
@@ -113,18 +118,8 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  echo_blue "Setting up dnsmasq, openvpn, openldap, and sssd on kvm nodes"
-  salt -C '*salt* or *kvm*' state.apply compunaut_dnsmasq,compunaut_openvpn,compunaut_openldap,compunaut_sssd --state_output=mixed
-
-  minion_wait
-  echo_blue "Restart OpenVPN"
-  salt -C '*salt* or *kvm*' cmd.run 'systemctl restart openvpn'
-
-  update_data
-
-  minion_wait
-  echo_blue "Setting up consul on kvm nodes"
-  salt -C '*salt* or *kvm*' state.apply compunaut_consul --state_output=mixed
+  echo_blue "Highstating the Hypervisors one more time"
+  salt -C '*salt* or *kvm*' state.apply exclude=compunaut_hypervisor
 
 # Don't exit until all salt minions are answering
   echo_blue "All minions are now responding. You may run salt commands against them now"
