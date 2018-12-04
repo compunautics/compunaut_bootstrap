@@ -30,7 +30,7 @@ update_data() {
   minion_wait
   echo_blue "Updating mine again"
   salt '*' mine.update --async
-  sleep 20
+  sleep 60
 }
 
 echo_red() {

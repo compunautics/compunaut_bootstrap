@@ -45,7 +45,6 @@ source ./compunaut_functions
 # Install keepalived
   echo_red "INSTALL KEEPALIVED"
   update_data
-  sleep 30
 
   echo_blue "Applying states"
   salt -C '*vpn* or *proxy*' state.apply compunaut_keepalived --async
@@ -63,7 +62,6 @@ source ./compunaut_functions
 # Install dnsmasq
   echo_red "INSTALL DNSMASQ"
   update_data
-  sleep 30
 
   minion_wait
   echo_blue "Applying states"
@@ -81,7 +79,6 @@ source ./compunaut_functions
 
   sleep 150
   update_data
-  sleep 30
 
   minion_wait
   echo_blue "Setting up Galera"
@@ -132,7 +129,6 @@ source ./compunaut_functions
 # Final kvm node setup
   echo_red "FINAL SETUP"
   update_data
-  sleep 30
 
   minion_wait
   echo_blue "Highstating the Hypervisors one more time"
