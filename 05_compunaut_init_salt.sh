@@ -77,8 +77,6 @@ source ./compunaut_functions
 
   echo_blue "Installing LDAP"
   salt '*ldap*' state.highstate --state_output=mixed
-  minion_wait
-  salt '*ldap*' cmd.run 'systemctl restart slapd'
 
   minion_wait
   echo_blue "Setting up Galera"
