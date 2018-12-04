@@ -66,7 +66,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Applying states"
-  salt '*' state.apply compunaut_dnsmasq --state_output=mixed
+  salt -C 'not *salt* and not *kvm*' state.apply compunaut_dnsmasq --state_output=mixed
 
 # Install databases
   echo_red "INSTALL DATABASES"
@@ -77,9 +77,8 @@ source ./compunaut_functions
 
   echo_blue "Installing LDAP"
   salt '*ldap*' state.highstate --state_output=mixed
+  minion_wait
   salt '*ldap*' cmd.run 'systemctl restart slapd'
-
-  update_data
 
   minion_wait
   echo_blue "Setting up Galera"
@@ -87,6 +86,7 @@ source ./compunaut_functions
 
 # Install consul
   echo_red "INSTALL CONSUL"
+  update_data
 
   minion_wait
   echo_blue "Applying states"
