@@ -78,7 +78,8 @@ source ./compunaut_functions
   echo_blue "Installing LDAP"
   salt '*ldap*' state.highstate --state_output=mixed
 
-  minion_wait
+  update_data
+
   echo_blue "Setting up Galera"
   salt '*db*' state.apply compunaut_mysql.galera --state_output=mixed
 
