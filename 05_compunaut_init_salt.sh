@@ -39,7 +39,7 @@ source ./compunaut_functions
 
   minion_wait
   salt '*'  saltutil.sync_all
-  sleep 120
+  sleep 90
 
 ### DEPLOY COMPUNAUT
 # Install keepalived
@@ -78,7 +78,6 @@ source ./compunaut_functions
   salt '*ldap*' state.highstate --state_output=mixed
   salt '*ldap*' cmd.run 'systemctl restart slapd'
 
-  sleep 30
   update_data
 
   minion_wait
