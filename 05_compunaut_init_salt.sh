@@ -42,18 +42,22 @@ source ./compunaut_functions
   sleep 60
 
 ### DEPLOY COMPUNAUT
-  echo_red "DEPLOY OPENVPN"
+# Install keepalived
+  echo_red "INSTALL KEEPALIVED"
   update_data
   sleep 60
 
-  echo_blue "Install keepalived on VPN servers"
-  salt '*vpn*' state.apply compunaut_keepalived --async
+  echo_blue "Applying states"
+  salt -C '*vpn* or *proxy*' state.apply compunaut_keepalived --async
+
+# Install openvpn
+  echo_red "DEPLOY OPENVPN"
 
   echo_blue "Generating openvpn certs for minions"
   salt '*salt*' state.apply compunaut_openvpn.certificates --state_output=mixed
 
   minion_wait
-  echo_blue "Installing openvpn"
+  echo_blue "Deploying openvpn"
   salt '*' state.apply compunaut_openvpn,compunaut_default --state_output=mixed
 
 # Install databases
@@ -67,6 +71,7 @@ source ./compunaut_functions
   echo_blue "Installing LDAP"
   salt '*ldap*' state.highstate --async
 
+  sleep 120
   update_data
 
   minion_wait
@@ -103,7 +108,9 @@ source ./compunaut_functions
   echo_red "INSTALL HAPROXY"
 
   echo_blue "Applying states"
-  salt '*proxy*' state.apply compunaut_keepalived,compunaut_haproxy --async
+  salt '*proxy*' state.apply compunaut_keepalived,compunaut_haproxy --state_output=mixed
+
+  sleep 60
   minion_wait
 
 # Running highstate
