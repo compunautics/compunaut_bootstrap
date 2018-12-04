@@ -36,7 +36,7 @@ source ./compunaut_functions
   minion_wait
   echo_blue "Running compunaut_salt"
   salt '*' state.apply compunaut_salt.minion --async
-  sleep 90
+  sleep 120
 
   minion_wait
   salt '*'  saltutil.sync_all
