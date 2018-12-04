@@ -92,10 +92,16 @@ source ./compunaut_functions
   echo_blue "Applying states"
   salt '*' state.apply compunaut_consul --state_output=mixed
 
+# Install Gitlab
+  echo_red "INSTALL GITLAB"
+
+  minion_wait
+  echo_blue "Applying states"
+  salt '*gitlab*' state.apply compunaut_gitlab --async
+
 # Install Grafana
   echo_red "INSTALL GRAFANA"
 
-  minion_wait
   echo_blue "Applying states"
   salt '*monitor*' state.apply compunaut_grafana --async
 
@@ -105,19 +111,13 @@ source ./compunaut_functions
   echo_blue "Applying states"
   salt '*rundeck*' state.apply compunaut_rundeck --async
 
-# Install Gitlab
-  echo_red "INSTALL GITLAB"
-
-  echo_blue "Applying states"
-  salt '*gitlab*' state.apply compunaut_gitlab --async
-
 # Install Haproxy
   echo_red "INSTALL HAPROXY"
 
   echo_blue "Applying states"
   salt '*proxy*' state.apply compunaut_haproxy --state_output=mixed
 
-  sleep 60
+  sleep 180
   minion_wait
 
 # Running highstate
