@@ -19,7 +19,7 @@ minion_wait() {
 update_data() {
   echo_blue "UPDATING MINION DATA"
   minion_wait
-  echo_blue "Updating mine"
+  echo_green "Updating mine"
   salt '*' mine.update --async
   sleep 20
 
