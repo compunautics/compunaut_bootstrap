@@ -60,9 +60,16 @@ source ./compunaut_functions
   echo_blue "Deploying openvpn"
   salt '*' state.apply compunaut_openvpn,compunaut_default --state_output=mixed
 
+# Install dnsmasq
+  echo_red "INSTALL DNSMASQ"
+  update_data
+
+  minion_wait
+  echo_blue "Applying states"
+  salt '*' state.apply compunaut_dnsmasq --state_output=mixed
+
 # Install databases
   echo_red "INSTALL DATABASES"
-  update_data
 
   minion_wait
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
@@ -78,12 +85,12 @@ source ./compunaut_functions
   echo_blue "Setting up Galera"
   salt '*db*' state.apply compunaut_mysql.galera --state_output=mixed
 
-# Install consul and dnsmasq
-  echo_red "INSTALL CONSUL AND DNSMASQ"
+# Install consul
+  echo_red "INSTALL CONSUL"
 
   minion_wait
   echo_blue "Applying states"
-  salt '*' state.apply compunaut_consul,compunaut_dnsmasq --state_output=mixed
+  salt '*' state.apply compunaut_consul --state_output=mixed
 
 # Install Grafana
   echo_red "INSTALL GRAFANA"
