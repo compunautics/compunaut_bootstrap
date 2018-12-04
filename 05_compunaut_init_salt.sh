@@ -75,9 +75,10 @@ source ./compunaut_functions
   salt '*db*' state.apply compunaut_mysql,compunaut_influxdb --async
 
   echo_blue "Installing LDAP"
-  salt '*ldap*' state.highstate --async
+  salt '*ldap*' state.highstate --state_output=mixed
+  salt '*ldap*' cmd.run 'systemctl restart slapd'
 
-  sleep 150
+  sleep 30
   update_data
 
   minion_wait
