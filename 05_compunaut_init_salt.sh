@@ -24,13 +24,13 @@ source ./compunaut_functions
   sleep 30
 
   salt-key -A -y
-  sleep 30
+  sleep 60
 
 # Update all software on all minions
   minion_wait
   echo_blue "Updating all vms"
   salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get install salt-minion -y' --async
-  sleep 60
+  sleep 90
 
 # Configure mine on master and minions
   minion_wait
