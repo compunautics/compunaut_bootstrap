@@ -78,7 +78,7 @@ source ./compunaut_functions
   echo_blue "Installing LDAP"
   salt '*ldap*' state.highstate --async
 
-  sleep 120
+  sleep 150
   update_data
 
   minion_wait
@@ -115,7 +115,7 @@ source ./compunaut_functions
   echo_red "INSTALL HAPROXY"
 
   echo_blue "Applying states"
-  salt '*proxy*' state.apply compunaut_keepalived,compunaut_haproxy --state_output=mixed
+  salt '*proxy*' state.apply compunaut_haproxy --state_output=mixed
 
   sleep 60
   minion_wait
