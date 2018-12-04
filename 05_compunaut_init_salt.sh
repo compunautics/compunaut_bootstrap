@@ -55,10 +55,12 @@ source ./compunaut_functions
 
   echo_blue "Generating openvpn certs for minions"
   salt '*salt*' state.apply compunaut_openvpn.certificates --state_output=mixed
+  sleep 20
 
   minion_wait
   echo_blue "Deploying openvpn"
   salt '*' state.apply compunaut_openvpn,compunaut_default --state_output=mixed
+  sleep 20
 
 # Install dnsmasq
   echo_red "INSTALL DNSMASQ"
@@ -67,6 +69,7 @@ source ./compunaut_functions
   minion_wait
   echo_blue "Applying states"
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_dnsmasq --state_output=mixed
+  sleep 20
 
 # Install databases
   echo_red "INSTALL DATABASES"
@@ -79,10 +82,12 @@ source ./compunaut_functions
   salt '*ldap*' state.highstate --state_output=mixed
   minion_wait
   salt '*ldap*' cmd.run 'systemctl restart slapd'
+  sleep 20
 
   minion_wait
   echo_blue "Setting up Galera"
   salt '*db*' state.apply compunaut_mysql.galera --state_output=mixed
+  sleep 20
 
 # Install consul
   echo_red "INSTALL CONSUL"
@@ -91,6 +96,7 @@ source ./compunaut_functions
   minion_wait
   echo_blue "Applying states"
   salt '*' state.apply compunaut_consul --state_output=mixed
+  sleep 20
 
 # Install Gitlab
   echo_red "INSTALL GITLAB"
@@ -126,6 +132,7 @@ source ./compunaut_functions
   minion_wait
   echo_blue "Running highstate"
   salt -C 'not *salt* and not *kvm*' state.highstate --state_output=mixed
+  sleep 20
 
 # Final kvm node setup
   echo_red "FINAL SETUP"
@@ -134,6 +141,7 @@ source ./compunaut_functions
   minion_wait
   echo_blue "Highstating the Hypervisors one more time"
   salt -C '*salt* or *kvm*' state.apply exclude=compunaut_hypervisor --state_output=mixed
+  sleep 20
 
   echo_blue "Restarting openvpn"
   salt '*' cmd.run 'systemctl restart openvpn'
