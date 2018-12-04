@@ -35,7 +35,8 @@ source ./compunaut_functions
 # Configure mine on master and minions
   minion_wait
   echo_blue "Running compunaut_salt"
-  salt '*' state.apply compunaut_salt.minion --state_output=mixed
+  salt '*' state.apply compunaut_salt.minion --async
+  sleep 60
 
   minion_wait
   salt '*'  saltutil.sync_all
