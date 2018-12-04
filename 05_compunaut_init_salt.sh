@@ -117,7 +117,7 @@ source ./compunaut_functions
   echo_blue "Applying states"
   salt '*proxy*' state.apply compunaut_haproxy --state_output=mixed
 
-  sleep 180
+  sleep 300
   minion_wait
 
 # Running highstate
