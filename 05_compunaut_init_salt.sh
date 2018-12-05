@@ -83,6 +83,9 @@ source ./compunaut_functions
   echo_blue "Setting up Galera"
   salt '*db*' state.apply compunaut_mysql.galera --state_output=mixed
 
+  echo_blue "Setting up ldap replication and memberof module"
+  salt '*ldap*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
+
 # Install consul
   echo_red "INSTALL CONSUL"
   update_data
@@ -116,7 +119,7 @@ source ./compunaut_functions
   echo_blue "Applying states"
   salt '*proxy*' state.apply compunaut_haproxy --state_output=mixed
 
-  sleep 300
+  sleep 360
   minion_wait
 
 # Running highstate
