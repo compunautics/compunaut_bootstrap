@@ -80,11 +80,11 @@ source ./compunaut_functions
 
   update_data
 
+  echo_blue "Setting up ldap replication and memberof module"
+  salt '*ldap*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --async
+
   echo_blue "Setting up Galera"
   salt '*db*' state.apply compunaut_mysql.galera --state_output=mixed
-
-  echo_blue "Setting up ldap replication and memberof module"
-  salt '*ldap*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
 
 # Install consul
   echo_red "INSTALL CONSUL"
@@ -135,7 +135,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Highstating the Hypervisors one more time"
-  salt -C '*salt* or *kvm*' state.apply compunaut_openvpn,compunaut_consul,compunaut_dnsmasq,compunaut_telegraf,compunaut_sssd,compunaut_openldap,compunaut_default,compunaut_iptables --state_output=mixed
+  salt -C '*salt* or *kvm*' state.highstate exclude=compunaut_hypervisor --state_output=mixed
 
   echo_blue "Restarting openvpn"
   salt '*' cmd.run 'systemctl restart openvpn'
