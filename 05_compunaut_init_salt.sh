@@ -135,7 +135,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Highstating the Hypervisors one more time"
-  salt -C '*salt* or *kvm*' state.apply exclude=compunaut_hypervisor --state_output=mixed
+  salt -C '*salt* or *kvm*' state.apply compunaut_openvpn,compunaut_consul,compunaut_dnsmasq,compunaut_telegraf,compunaut_sssd,compunaut_openldap,compunaut_default,compunaut_iptables --state_output=mixed
 
   echo_blue "Restarting openvpn"
   salt '*' cmd.run 'systemctl restart openvpn'
