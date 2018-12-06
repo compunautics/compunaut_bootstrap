@@ -40,7 +40,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Sync all"
-  salt '*'  saltutil.sync_all -b6 --batch-wait 15 1>/dev/null
+  salt '*'  saltutil.sync_all -b6 --batch-wait 20 1>/dev/null
   sleep 90
 
 ### DEPLOY COMPUNAUT
