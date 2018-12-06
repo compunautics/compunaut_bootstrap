@@ -26,7 +26,7 @@ update_data() {
 
   minion_wait
   echo_green "Updating pillar"
-  salt '*' saltutil.refresh_pillar -b8 --batch-wait 10 1>/dev/null
+  salt '*' saltutil.refresh_pillar -b6 --batch-wait 15 1>/dev/null
   sleep 20
 
   minion_wait
