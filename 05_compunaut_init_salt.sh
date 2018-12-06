@@ -74,7 +74,6 @@ source ./compunaut_functions
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
   salt '*db*' state.apply compunaut_mysql,compunaut_influxdb --async
 
-  minion_wait
   echo_blue "Installing LDAP"
   salt '*ldap*' state.highstate --state_output=mixed
 
