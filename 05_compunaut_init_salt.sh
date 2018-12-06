@@ -70,21 +70,20 @@ source ./compunaut_functions
 
 # Install databases
   echo_red "INSTALL DATABASES"
+  echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
+  salt '*db*' state.apply compunaut_mysql,compunaut_influxdb --async
 
   minion_wait
   echo_blue "Installing LDAP"
-  salt '*ldap*' state.highstate --async
-
-  echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
-  salt '*db*' state.apply compunaut_mysql,compunaut_influxdb --state_output=mixed
+  salt '*ldap*' state.highstate --state_output=mixed
 
   update_data
 
-  echo_blue "Setting up ldap replication and memberof module"
-  salt '*ldap*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --async
-
   echo_blue "Setting up Galera"
-  salt '*db*' state.apply compunaut_mysql.galera --state_output=mixed
+  salt '*db*' state.apply compunaut_mysql.galera --async
+
+  echo_blue "Setting up ldap replication and memberof module"
+  salt '*ldap*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
 
 # Install consul
   echo_red "INSTALL CONSUL"
