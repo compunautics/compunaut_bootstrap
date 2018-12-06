@@ -69,13 +69,19 @@ source ./compunaut_functions
   echo_blue "Applying states"
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_dnsmasq -b6 --batch-wait 20 --state_output=mixed
 
+# Install SSSD
+  echo_read "INSTALL SSSD"
+  
+  minion_wait
+  salt -C 'not *salt* and not *kvm*' state.apply compunaut_sssd -b6 --batch-wait 20 --state_output=mixed
+
 # Install databases
   echo_red "INSTALL DATABASES"
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
   salt '*db*' state.apply compunaut_mysql,compunaut_influxdb --async
 
   echo_blue "Installing LDAP"
-  salt '*ldap*' state.highstate --state_output=mixed
+  salt '*ldap*' state.apply compunaut_openldap --state_output=mixed
 
   update_data
 
@@ -121,20 +127,16 @@ source ./compunaut_functions
   sleep 360
   minion_wait
 
-# Running highstate
-  echo_red "HIGHSTATE THE VMS"
-
-  minion_wait
-  echo_blue "Running highstate"
-  salt -C 'not *salt* and not *kvm*' state.highstate -b6 --batch-wait 20 --state_output=mixed
-
-# Final kvm node setup
-  echo_red "FINAL SETUP"
+# Final setup
   update_data
 
-  minion_wait
+  echo_red "FINAL SETUP"
   echo_blue "Highstating the Hypervisors one more time"
-  salt -C '*salt* or *kvm*' state.apply compunaut_openvpn,compunaut_consul,compunaut_dnsmasq,compunaut_telegraf,compunaut_sssd,compunaut_openldap,compunaut_default,compunaut_iptables --state_output=mixed
+  salt -C '*salt* or *kvm*' state.highstate --state_output=mixed
+
+  minion_wait
+  echo_blue "Highstating the VMs"
+  salt -C 'not *salt* and not *kvm*' state.highstate -b6 --batch-wait 20 --state_output=mixed
 
   echo_blue "Restarting openvpn"
   salt '*' cmd.run 'systemctl restart openvpn'
