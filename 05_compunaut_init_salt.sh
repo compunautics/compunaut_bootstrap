@@ -75,7 +75,7 @@ source ./compunaut_functions
   salt '*db*' state.apply compunaut_mysql,compunaut_influxdb --async
 
   echo_blue "Installing LDAP"
-  salt '*ldap*' state.apply compunaut_openldap --state_output=mixed
+  salt '*ldap*' state.apply compunaut_openvpn.deploy,compunaut_openldap --state_output=mixed
   sleep 120
 
   update_data
