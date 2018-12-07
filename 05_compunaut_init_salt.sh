@@ -73,6 +73,7 @@ source ./compunaut_functions
   echo_read "INSTALL SSSD"
   
   minion_wait
+  echo_blue "Applying states"
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_sssd -b6 --batch-wait 20 --state_output=mixed
 
 # Install databases
@@ -131,6 +132,7 @@ source ./compunaut_functions
   update_data
 
   echo_red "FINAL SETUP"
+  minion_wait
   echo_blue "Highstating the Hypervisors one more time"
   salt -C '*salt* or *kvm*' state.highstate --state_output=mixed
 
