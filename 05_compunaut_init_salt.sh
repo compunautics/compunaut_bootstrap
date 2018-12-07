@@ -70,7 +70,7 @@ source ./compunaut_functions
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_dnsmasq -b8 --batch-wait 20 --state_output=mixed
 
 # Install SSSD
-  echo_read "INSTALL SSSD"
+  echo_red "INSTALL SSSD"
   
   minion_wait
   echo_blue "Applying states"
