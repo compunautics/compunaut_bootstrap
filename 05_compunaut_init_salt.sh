@@ -40,7 +40,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Sync all"
-  salt '*'  saltutil.sync_all -b8 --batch-wait 20 1>/dev/null
+  salt '*'  saltutil.sync_all -b6 --batch-wait 20 1>/dev/null
   sleep 90
 
 ### DEPLOY COMPUNAUT
@@ -59,7 +59,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Deploying OpenVPN"
-  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_openvpn,compunaut_default -b8 --batch-wait 20 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_openvpn,compunaut_default -b6 --batch-wait 20 --state_output=mixed
 
 # Install dnsmasq
   echo_red "INSTALL DNSMASQ"
@@ -67,7 +67,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Applying states"
-  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_dnsmasq -b8 --batch-wait 20 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_dnsmasq -b6 --batch-wait 20 --state_output=mixed
 
 # Install databases
   echo_red "INSTALL DATABASES"
@@ -92,7 +92,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Applying states"
-  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_consul -b8 --batch-wait 20 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_consul -b6 --batch-wait 20 --state_output=mixed
 
 # Install Gitlab
   echo_red "INSTALL GITLAB"
@@ -132,7 +132,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Highstating the VMs"
-  salt -C 'not I@compunaut_hypervisor:*' state.highstate -b8 --batch-wait 20 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.highstate -b6 --batch-wait 20 --state_output=mixed
 
   echo_blue "Restarting OpenVPN"
   salt '*' cmd.run 'systemctl restart openvpn'
