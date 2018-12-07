@@ -10,12 +10,12 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Highstating the kvm nodes"
-  salt -C '*salt* or *kvm*' state.highstate --state_output=mixed
+  salt -C 'I@compunaut_hypervisor:*' state.highstate --state_output=mixed
 
 # Log into vms and configure salt
   minion_wait
   echo_blue "Logging into VMs and configuring hostname and salt"
-  salt -C '*salt* or *kvm*' state.apply compunaut_hypervisor.salt_vms --state_output=mixed
+  salt -C 'I@compunaut_hypervisor:*' state.apply compunaut_hypervisor.salt_vms --state_output=mixed
 
 ### MINION SETUP
 # Accept all salt keys
@@ -29,7 +29,7 @@ source ./compunaut_functions
 # Update salt-minions on vms
   minion_wait
   echo_blue "Update salt-minions on VMs"
-  salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get install salt-minion -y' --async
+  salt -C 'not I@compunaut_hypervisor:*' cmd.run 'apt-get update && apt-get install salt-minion -y' --async
   sleep 90
 
 # Configure mine on master and minions
@@ -59,7 +59,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Deploying OpenVPN"
-  salt -C 'not *salt* and not *kvm*' state.apply compunaut_openvpn,compunaut_default -b8 --batch-wait 20 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_openvpn,compunaut_default -b8 --batch-wait 20 --state_output=mixed
 
 # Install dnsmasq
   echo_red "INSTALL DNSMASQ"
@@ -67,7 +67,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Applying states"
-  salt -C 'not *salt* and not *kvm*' state.apply compunaut_dnsmasq -b8 --batch-wait 20 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_dnsmasq -b8 --batch-wait 20 --state_output=mixed
 
 # Install databases
   echo_red "INSTALL DATABASES"
@@ -92,7 +92,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Applying states"
-  salt -C 'not *salt* and not *kvm*' state.apply compunaut_consul -b8 --batch-wait 20 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_consul -b8 --batch-wait 20 --state_output=mixed
 
 # Install Gitlab
   echo_red "INSTALL GITLAB"
@@ -128,11 +128,11 @@ source ./compunaut_functions
   echo_red "FINAL SETUP"
   minion_wait
   echo_blue "Highstating the Hypervisors one more time"
-  salt -C '*salt* or *kvm*' state.highstate --state_output=mixed
+  salt -C 'I@compunaut_hypervisor:*' state.highstate --state_output=mixed
 
   minion_wait
   echo_blue "Highstating the VMs"
-  salt -C 'not *salt* and not *kvm*' state.highstate -b8 --batch-wait 20 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.highstate -b8 --batch-wait 20 --state_output=mixed
 
   echo_blue "Restarting OpenVPN"
   salt '*' cmd.run 'systemctl restart openvpn'
