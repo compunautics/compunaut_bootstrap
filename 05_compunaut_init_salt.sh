@@ -14,27 +14,27 @@ source ./compunaut_functions
 
 # Log into vms and configure salt
   minion_wait
-  echo_blue "Logging into vms and configuring hostname and salt"
+  echo_blue "Logging into VMs and configuring hostname and salt"
   salt -C '*salt* or *kvm*' state.apply compunaut_hypervisor.salt_vms --state_output=mixed
 
 ### MINION SETUP
 # Accept all salt keys
   echo_red "SET UP COMPUNAUT MINIONS"
-  echo_blue "Accepting salt keys from vms"
+  echo_blue "Accepting salt keys from VMss"
   sleep 30
 
   salt-key -A -y
   sleep 60
 
-# Update all software on all minions
+# Update salt-minions on vms
   minion_wait
-  echo_blue "Updating all vms"
+  echo_blue "Update salt-minions on VMs"
   salt -C 'not *salt* and not *kvm*' cmd.run 'apt-get update && apt-get install salt-minion -y' --async
   sleep 90
 
 # Configure mine on master and minions
   minion_wait
-  echo_blue "Running compunaut_salt"
+  echo_blue "Configure salt minions"
   salt '*' state.apply compunaut_salt.minion --async
   sleep 120
 
@@ -54,11 +54,11 @@ source ./compunaut_functions
 # Install openvpn
   echo_red "DEPLOY OPENVPN"
 
-  echo_blue "Generating openvpn certs for minions"
+  echo_blue "Generating OpenVPN certs for minions"
   salt '*salt*' state.apply compunaut_openvpn.certificates --state_output=mixed
 
   minion_wait
-  echo_blue "Deploying openvpn"
+  echo_blue "Deploying OpenVPN"
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_openvpn,compunaut_default -b8 --batch-wait 20 --state_output=mixed
 
 # Install dnsmasq
@@ -83,7 +83,7 @@ source ./compunaut_functions
   echo_blue "Setting up Galera"
   salt '*db*' state.apply compunaut_mysql.galera --async
 
-  echo_blue "Setting up ldap replication and memberof module"
+  echo_blue "Setting up LDAP replication and memberOf module"
   salt '*ldap*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
 
 # Install consul
@@ -134,7 +134,7 @@ source ./compunaut_functions
   echo_blue "Highstating the VMs"
   salt -C 'not *salt* and not *kvm*' state.highstate -b8 --batch-wait 20 --state_output=mixed
 
-  echo_blue "Restarting openvpn"
+  echo_blue "Restarting OpenVPN"
   salt '*' cmd.run 'systemctl restart openvpn'
 
 # Don't exit until all salt minions are answering
