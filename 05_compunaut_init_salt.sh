@@ -69,13 +69,6 @@ source ./compunaut_functions
   echo_blue "Applying states"
   salt -C 'not *salt* and not *kvm*' state.apply compunaut_dnsmasq -b8 --batch-wait 20 --state_output=mixed
 
-# Install SSSD
-  echo_red "INSTALL SSSD"
-  
-  minion_wait
-  echo_blue "Applying states"
-  salt -C 'not *salt* and not *kvm*' state.apply compunaut_sssd -b8 --batch-wait 20 --state_output=mixed
-
 # Install databases
   echo_red "INSTALL DATABASES"
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
@@ -129,7 +122,7 @@ source ./compunaut_functions
   sleep 360
   minion_wait
 
-# Final setup
+# FINAL SETUP
   update_data
 
   echo_red "FINAL SETUP"
