@@ -10,7 +10,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Highstating the kvm nodes"
-  salt -C 'I@compunaut_hypervisor:*' state.highstate --state_output=mixed
+  salt -C 'I@compunaut_hypervisor:*' state.apply compunaut_hypervisor --state_output=mixed
 
 # Log into vms and configure salt
   minion_wait
