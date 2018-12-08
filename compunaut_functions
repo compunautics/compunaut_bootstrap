@@ -13,26 +13,26 @@ minion_wait() {
     echo -e "${GREEN}Some minions are running jobs...\nWaiting 5 seconds...${NC}"
     sleep 5
   done
-  echo -e "${GREEN}Minions ready. Waiting 20 seconds...${NC}"
-  sleep 20
+  echo -e "${GREEN}Minions ready. Waiting 15 seconds...${NC}"
+  sleep 15
 }
 
 update_data() {
   echo_blue "UPDATING MINION DATA"
   minion_wait
   echo_green "Updating mine"
-  salt '*' mine.update --async
-  sleep 10
+  salt '*' saltutil.refresh_grains -b5 --batch-wait 15 1>/dev/null
+  sleep 20
 
   minion_wait
   echo_green "Updating pillar"
-  salt '*' saltutil.refresh_pillar -b6 --batch-wait 20 1>/dev/null
+  salt '*' saltutil.refresh_pillar -b5 --batch-wait 15 1>/dev/null
   sleep 20
 
   minion_wait
   echo_green "Updating mine again"
   salt '*' mine.update --async
-  sleep 20
+  sleep 10
 }
 
 echo_red() {

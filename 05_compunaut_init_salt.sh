@@ -40,7 +40,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Sync all"
-  salt '*'  saltutil.sync_all -b6 --batch-wait 20 1>/dev/null
+  salt '*'  saltutil.sync_all -b6 --batch-wait 15 1>/dev/null
   sleep 90
 
 ### DEPLOY COMPUNAUT
@@ -49,9 +49,10 @@ source ./compunaut_functions
   update_data
 
   echo_blue "Applying states"
-  salt -C '*vpn* or *proxy*' state.apply compunaut_keepalived --async
+  salt -C 'I@keepalived:vrrp_instance:*:virtual_router_id:*' state.apply compunaut_keepalived --async
 
 # Install openvpn
+  update_data
   echo_red "DEPLOY OPENVPN"
 
   echo_blue "Generating OpenVPN certs for minions"
@@ -59,7 +60,11 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Deploying OpenVPN"
-  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_openvpn,compunaut_default -b6 --batch-wait 20 --state_output=mixed
+  salt -C 'I@openvpn:*' state.apply compunaut_openvpn,compunaut_default -b8 --batch-wait 15 --state_output=mixed
+
+  minion_wait
+  echo_blue "Restarting OpenVPN"
+  salt -C 'I@openvpn:*' cmd.run 'systemctl restart openvpn'
 
 # Install dnsmasq
   echo_red "INSTALL DNSMASQ"
@@ -67,24 +72,24 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Applying states"
-  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_dnsmasq -b6 --batch-wait 20 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_dnsmasq -b8 --batch-wait 15 --state_output=mixed
 
 # Install databases
   echo_red "INSTALL DATABASES"
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
-  salt '*db*' state.apply compunaut_mysql,compunaut_influxdb --async
+  salt -C 'I@mysql:server:*' state.apply compunaut_mysql,compunaut_influxdb --async
 
   echo_blue "Installing LDAP"
-  salt '*ldap*' state.apply compunaut_openvpn.deploy,compunaut_openldap --state_output=mixed
+  salt -C 'I@openldap:slapd_services:*' state.apply compunaut_openvpn.deploy,compunaut_openldap --state_output=mixed
   sleep 120
 
   update_data
 
   echo_blue "Setting up Galera"
-  salt '*db*' state.apply compunaut_mysql.galera --async
+  salt 'I@mysql:server:*' state.apply compunaut_mysql.galera --async
 
   echo_blue "Setting up LDAP replication and memberOf module"
-  salt '*ldap*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
+  salt 'I@openldap:slapd_services:*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
 
 # Install consul
   echo_red "INSTALL CONSUL"
@@ -92,32 +97,32 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Applying states"
-  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_consul -b6 --batch-wait 20 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_consul -b8 --batch-wait 15 --state_output=mixed
 
 # Install Gitlab
   echo_red "INSTALL GITLAB"
 
   minion_wait
   echo_blue "Applying states"
-  salt '*gitlab*' state.apply compunaut_gitlab --async
+  salt -C 'I@gitlab:*' state.apply compunaut_gitlab --async
 
 # Install Grafana
   echo_red "INSTALL GRAFANA"
 
   echo_blue "Applying states"
-  salt '*monitor*' state.apply compunaut_grafana --async
+  salt -C 'I@grafana:*' state.apply compunaut_grafana --async
 
 # Install Rundeck
   echo_red "INSTALL RUNDECK"
 
   echo_blue "Applying states"
-  salt '*rundeck*' state.apply compunaut_rundeck --async
+  salt -C 'I@rundeck:*' state.apply compunaut_rundeck --async
 
 # Install Haproxy
   echo_red "INSTALL HAPROXY"
 
   echo_blue "Applying states"
-  salt '*proxy*' state.apply compunaut_haproxy --state_output=mixed
+  salt -C 'I@haproxy:global:*' state.apply compunaut_haproxy --state_output=mixed
 
   sleep 360
   minion_wait
@@ -132,10 +137,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Highstating the VMs"
-  salt -C 'not I@compunaut_hypervisor:*' state.highstate -b6 --batch-wait 20 --state_output=mixed
-
-  echo_blue "Restarting OpenVPN"
-  salt '*' cmd.run 'systemctl restart openvpn'
+  salt -C 'not I@compunaut_hypervisor:*' state.highstate -b6 --batch-wait 15 --state_output=mixed
 
 # Don't exit until all salt minions are answering
   echo_blue "All minions are now responding. You may run salt commands against them now"
