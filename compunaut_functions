@@ -25,14 +25,14 @@ update_data() {
   sleep 20
 
   minion_wait
-  echo_green "Updating pillar"
-  salt '*' saltutil.refresh_pillar -b5 --batch-wait 15 1>/dev/null
+  echo_green "Updating mine"
+  salt '*' mine.update --async
   sleep 20
 
   minion_wait
-  echo_green "Updating mine"
-  salt '*' mine.update --async
-  sleep 10
+  echo_green "Updating pillar"
+  salt '*' saltutil.refresh_pillar -b5 --batch-wait 15 1>/dev/null
+  sleep 20
 }
 
 echo_red() {

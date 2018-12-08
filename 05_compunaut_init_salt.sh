@@ -9,7 +9,7 @@ source ./compunaut_functions
   update_data
 
   minion_wait
-  echo_blue "Highstating the kvm nodes"
+  echo_blue "Install KVM and boot VMs"
   salt -C 'I@compunaut_hypervisor:*' state.apply compunaut_hypervisor --state_output=mixed
 
 # Log into vms and configure salt
