@@ -68,7 +68,7 @@ source ./compunaut_functions
   update_data
 
   echo_blue "Applying states"
-  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_dnsmasq,compunaut_consul -b8 --batch-wait 15 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_consul,compunaut_dnsmasq -b8 --batch-wait 15 --state_output=mixed
 
 # Install databases
   echo_red "INSTALL DATABASES"
