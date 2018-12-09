@@ -8,7 +8,6 @@ source ./compunaut_functions
   echo_red "SET UP HYPERVISORS"
   update_data
 
-  minion_wait
   echo_blue "Install KVM and boot VMs"
   salt -C 'I@compunaut_hypervisor:*' state.apply compunaut_hypervisor --state_output=mixed
 
@@ -21,27 +20,27 @@ source ./compunaut_functions
 # Accept all salt keys
   echo_red "SET UP COMPUNAUT MINIONS"
   echo_blue "Accepting salt keys from VMss"
-  sleep 30
+  sleep 20
 
   salt-key -A -y
-  sleep 60
+  sleep 50
 
 # Update salt-minions on vms
   minion_wait
   echo_blue "Update salt-minions on VMs"
   salt -C 'not I@compunaut_hypervisor:*' cmd.run 'apt-get update && apt-get install salt-minion -y' --async
-  sleep 90
+  sleep 75
 
 # Configure mine on master and minions
   minion_wait
   echo_blue "Configure salt minions"
   salt '*' state.apply compunaut_salt.minion --async
-  sleep 120
+  sleep 90
 
   minion_wait
   echo_blue "Sync all"
-  salt '*'  saltutil.sync_all -b6 --batch-wait 15 1>/dev/null
-  sleep 90
+  salt '*'  saltutil.sync_all -b6 --batch-wait 20 1>/dev/null
+  sleep 75
 
 ### DEPLOY COMPUNAUT
 # Install keepalived
@@ -52,17 +51,15 @@ source ./compunaut_functions
   salt -C 'I@keepalived:vrrp_instance:*:virtual_router_id:*' state.apply compunaut_keepalived --async
 
 # Install openvpn
-  update_data
   echo_red "DEPLOY OPENVPN"
 
   echo_blue "Generating OpenVPN certs for minions"
-  salt '*salt*' state.apply compunaut_openvpn.certificates --state_output=mixed
+  salt '*salt*' state.apply compunaut_openvpn.ca,compunaut_openvpn.certificates --state_output=mixed
 
   minion_wait
   echo_blue "Deploying OpenVPN"
   salt -C 'I@openvpn:*' state.apply compunaut_openvpn,compunaut_default -b8 --batch-wait 15 --state_output=mixed
 
-  minion_wait
   echo_blue "Restarting OpenVPN"
   salt -C 'I@openvpn:*' cmd.run 'systemctl restart openvpn'
 
@@ -70,7 +67,6 @@ source ./compunaut_functions
   echo_red "INSTALL DNSMASQ"
   update_data
 
-  minion_wait
   echo_blue "Applying states"
   salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_dnsmasq -b8 --batch-wait 15 --state_output=mixed
 
@@ -86,16 +82,15 @@ source ./compunaut_functions
   update_data
 
   echo_blue "Setting up Galera"
-  salt 'I@mysql:server:*' state.apply compunaut_mysql.galera --async
+  salt -C 'I@mysql:server:*' state.apply compunaut_mysql.galera --async
 
   echo_blue "Setting up LDAP replication and memberOf module"
-  salt 'I@openldap:slapd_services:*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
+  salt -C 'I@openldap:slapd_services:*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
 
 # Install consul
   echo_red "INSTALL CONSUL"
   update_data
 
-  minion_wait
   echo_blue "Applying states"
   salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_consul -b8 --batch-wait 15 --state_output=mixed
 
@@ -131,7 +126,6 @@ source ./compunaut_functions
   update_data
 
   echo_red "FINAL SETUP"
-  minion_wait
   echo_blue "Highstating the Hypervisors one more time"
   salt -C 'I@compunaut_hypervisor:*' state.highstate --state_output=mixed
 

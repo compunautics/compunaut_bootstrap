@@ -3,38 +3,6 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-minion_wait() {
-  echo -e "${GREEN}\nChecking minion readiness...${NC}"
-  while [[ $(salt '*' test.ping | grep -iP "no response|not connected") ]]; do
-    echo -e "${GREEN}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
-    sleep 5
-  done
-  while [[ $(salt '*' saltutil.running | grep -i "jid") ]]; do
-    echo -e "${GREEN}Some minions are running jobs...\nWaiting 5 seconds...${NC}"
-    sleep 5
-  done
-  echo -e "${GREEN}Minions ready. Waiting 15 seconds...${NC}"
-  sleep 15
-}
-
-update_data() {
-  echo_blue "UPDATING MINION DATA"
-  minion_wait
-  echo_green "Updating grains"
-  salt '*' saltutil.refresh_grains -b5 --batch-wait 15 1>/dev/null
-  sleep 20
-
-  minion_wait
-  echo_green "Updating mine"
-  salt '*' mine.update --async
-  sleep 20
-
-  minion_wait
-  echo_green "Updating pillar"
-  salt '*' saltutil.refresh_pillar -b5 --batch-wait 15 1>/dev/null
-  sleep 20
-}
-
 echo_red() {
   local message=${1}
   echo -e "${RED}\n${message}...${NC}"
@@ -48,4 +16,38 @@ echo_green() {
 echo_blue() {
   local message=${1}
   echo -e "${BLUE}\n${message}...${NC}"
+}
+
+minion_wait() {
+  echo -e "${GREEN}\nChecking minion readiness...${NC}"
+  while [[ $(salt '*' test.ping | grep -iP "no response|not connected") ]]; do
+    echo -e "${GREEN}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
+    sleep 5
+  done
+  while [[ $(salt '*' saltutil.running | grep -i "jid") ]]; do
+    echo -e "${GREEN}Some minions are running jobs...\nWaiting 5 seconds...${NC}"
+    sleep 5
+  done
+  echo -e "${GREEN}Minions ready. Waiting 10 seconds...${NC}"
+  sleep 10
+}
+
+update_data() {
+  echo_blue "UPDATING MINION DATA"
+  minion_wait
+  echo_green "Updating grains"
+  salt '*' saltutil.refresh_grains -b5 --batch-wait 15 1>/dev/null
+  sleep 15
+
+  minion_wait
+  echo_green "Updating mine"
+  salt '*' mine.update --async
+  sleep 15
+
+  minion_wait
+  echo_green "Updating pillar"
+  salt '*' saltutil.refresh_pillar -b5 --batch-wait 15 1>/dev/null
+  sleep 15
+
+  minion_wait
 }
