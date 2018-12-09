@@ -23,7 +23,7 @@ source ./compunaut_functions
   sleep 20
 
   salt-key -A -y
-  sleep 50
+  sleep 40
 
 # Update salt-minions on vms
   minion_wait
@@ -40,7 +40,7 @@ source ./compunaut_functions
   minion_wait
   echo_blue "Sync all"
   salt '*'  saltutil.sync_all -b6 --batch-wait 20 1>/dev/null
-  sleep 75
+  sleep 60
 
 ### DEPLOY COMPUNAUT
 # Install keepalived
@@ -64,14 +64,15 @@ source ./compunaut_functions
   salt -C 'I@openvpn:*' cmd.run 'systemctl restart openvpn'
 
 # Install dnsmasq
-  echo_red "INSTALL DNSMASQ"
+  echo_red "INSTALL DNSMASQ AND CONSUL"
   update_data
 
   echo_blue "Applying states"
-  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_dnsmasq -b8 --batch-wait 15 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_dnsmasq,compunaut_consul -b8 --batch-wait 15 --state_output=mixed
 
 # Install databases
   echo_red "INSTALL DATABASES"
+
   echo_blue "Installing MySQL, InfluxDB, and Influx Relay"
   salt -C 'I@mysql:server:*' state.apply compunaut_mysql,compunaut_influxdb --async
 
@@ -86,13 +87,6 @@ source ./compunaut_functions
 
   echo_blue "Setting up LDAP replication and memberOf module"
   salt -C 'I@openldap:slapd_services:*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
-
-# Install consul
-  echo_red "INSTALL CONSUL"
-  update_data
-
-  echo_blue "Applying states"
-  salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_consul -b8 --batch-wait 15 --state_output=mixed
 
 # Install Gitlab
   echo_red "INSTALL GITLAB"
@@ -118,14 +112,12 @@ source ./compunaut_functions
 
   echo_blue "Applying states"
   salt -C 'I@haproxy:global:*' state.apply compunaut_haproxy --state_output=mixed
-
   sleep 360
-  minion_wait
 
 # FINAL SETUP
+  echo_red "FINAL SETUP"
   update_data
 
-  echo_red "FINAL SETUP"
   echo_blue "Highstating the Hypervisors one more time"
   salt -C 'I@compunaut_hypervisor:*' state.highstate --state_output=mixed
 
