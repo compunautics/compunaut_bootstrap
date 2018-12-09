@@ -112,7 +112,7 @@ source ./compunaut_functions
 
   echo_blue "Applying states"
   salt -C 'I@haproxy:global:*' state.apply compunaut_haproxy --state_output=mixed
-  sleep 360
+  sleep 400
 
 # FINAL SETUP
   echo_red "FINAL SETUP"
