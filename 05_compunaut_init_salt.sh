@@ -19,28 +19,26 @@ source ./compunaut_functions
 ### MINION SETUP
 # Accept all salt keys
   echo_red "SET UP COMPUNAUT MINIONS"
-  echo_blue "Accepting salt keys from VMss"
-  sleep 20
+  echo_blue "Accepting salt keys from VMs"
+  echo_green "Waiting 15 seconds"
+  sleep 15
 
   salt-key -A -y
-  sleep 40
-
-# Update salt-minions on vms
-  minion_wait
-  echo_blue "Update salt-minions on VMs"
-  salt -C 'not I@compunaut_hypervisor:*' cmd.run 'apt-get update && apt-get install salt-minion -y' --async
-  sleep 75
+  echo_green "Waiting 30 seconds"
+  sleep 30
 
 # Configure mine on master and minions
   minion_wait
   echo_blue "Configure salt minions"
   salt '*' state.apply compunaut_salt.minion --async
-  sleep 90
+  echo_green "Waiting 100 seconds"
+  sleep 100
 
   minion_wait
   echo_blue "Sync all"
   salt '*'  saltutil.sync_all -b6 --batch-wait 20 1>/dev/null
-  sleep 60
+  echo_green "Waiting 45 seconds"
+  sleep 45
 
 ### DEPLOY COMPUNAUT
 # Install keepalived
@@ -64,7 +62,7 @@ source ./compunaut_functions
   salt -C 'I@openvpn:*' cmd.run 'systemctl restart openvpn'
 
 # Install dnsmasq
-  echo_red "INSTALL DNSMASQ AND CONSUL"
+  echo_red "INSTALL CONSUL AND DNSMASQ"
   update_data
 
   echo_blue "Applying states"
@@ -78,6 +76,7 @@ source ./compunaut_functions
 
   echo_blue "Installing LDAP"
   salt -C 'I@openldap:slapd_services:*' state.apply compunaut_openvpn.deploy,compunaut_openldap --state_output=mixed
+  echo_green "Waiting 120 seconds"
   sleep 120
 
   update_data
@@ -112,6 +111,7 @@ source ./compunaut_functions
 
   echo_blue "Applying states"
   salt -C 'I@haproxy:global:*' state.apply compunaut_haproxy --state_output=mixed
+  echo_green "Waiting 400 seconds"
   sleep 400
 
 # FINAL SETUP

@@ -37,16 +37,19 @@ update_data() {
   minion_wait
   echo_green "Updating grains"
   salt '*' saltutil.refresh_grains -b5 --batch-wait 15 1>/dev/null
+  echo_green "Done. Waiting 15 seconds"
   sleep 15
 
   minion_wait
   echo_green "Updating mine"
   salt '*' mine.update --async
+  echo_green "Done. Waiting 15 seconds"
   sleep 15
 
   minion_wait
   echo_green "Updating pillar"
   salt '*' saltutil.refresh_pillar -b5 --batch-wait 15 1>/dev/null
+  echo_green "Done. Waiting 15 seconds"
   sleep 15
 
   minion_wait
