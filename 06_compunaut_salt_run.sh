@@ -53,3 +53,7 @@ salt -C 'I@mysql:server:*' state.apply compunaut_mysql.galera --async
 update_data
 echo_red "Highstate the VMs one last time"
 salt -C 'not I@compunaut_hypervisor:*' state.highstate -b8 --batch-wait 15 --state_output=mixed
+
+# Apply Consul states to hypervisors
+echo_red "Apply consul states to hypervisors"
+salt -C 'I@compunaut_hypervisor:*' state.apply compunaut_consul
