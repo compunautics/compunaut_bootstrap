@@ -84,7 +84,7 @@ source ./compunaut_functions
   echo_blue "Setting up Galera"
   salt -C 'I@mysql:server:*' state.apply compunaut_mysql.galera --async
 
-  echo_blue "Setting up LDAP replication and memberOf module"
+  echo_blue "Setting up LDAP replication, memberOf module, and guacConfigGroup schema"
   salt -C 'I@openldap:slapd_services:*' state.apply compunaut_openldap.memberof,compunaut_openldap.guacConfigGroup,compunaut_openldap.repl --state_output=mixed
 
 # Install Gitlab
