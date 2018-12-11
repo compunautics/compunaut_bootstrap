@@ -106,6 +106,12 @@ source ./compunaut_functions
   echo_blue "Applying states"
   salt -C 'I@rundeck:*' state.apply compunaut_rundeck --async
 
+# Install Guacamole
+  echo_red "INSTALL GUACAMOLE"
+
+  echo_blue "Applying states"
+  salt -C 'I@compunaut_guacamole:*' state.apply compunaut_guacamole --async
+
 # Install Haproxy
   echo_red "INSTALL HAPROXY"
 
