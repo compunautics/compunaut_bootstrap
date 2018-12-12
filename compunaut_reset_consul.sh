@@ -12,5 +12,4 @@ salt '*' cmd.run 'rm -rfv /opt/consul/'
 ### REINSTALL CONSUL
 update_data
 
-minion_wait
 salt '*' state.apply compunaut_consul
