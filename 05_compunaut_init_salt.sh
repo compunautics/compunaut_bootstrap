@@ -87,6 +87,12 @@ source ./compunaut_functions
   echo_blue "Setting up LDAP replication and memberOf module"
   salt -C 'I@openldap:slapd_services:*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
 
+# Install Netboot
+  echo_red "INSTALL NETBOOT"
+
+  echo_blue "Applying states"
+  salt -C 'I@compunaut_guacamole:* or I@compunaut_vnc:* or I@compunaut_piserver:*' state.apply compunaut_guacamole,compunaut_guacamole.mysql,compunaut_vnc,compunaut_piserver --async
+
 # Install Gitlab
   echo_red "INSTALL GITLAB"
 
@@ -105,12 +111,6 @@ source ./compunaut_functions
 
   echo_blue "Applying states"
   salt -C 'I@rundeck:*' state.apply compunaut_rundeck --async
-
-# Install Guacamole
-  echo_red "INSTALL GUACAMOLE"
-
-  echo_blue "Applying states"
-  salt -C 'I@compunaut_guacamole:*' state.apply compunaut_guacamole,compunaut_guacamole.mysql --async
 
 # Install Haproxy
   echo_red "INSTALL HAPROXY"
