@@ -4,9 +4,9 @@ cd "${0%/*}"
 source ./compunaut_functions
 
 # Install Netboot
+  minion_wait
   echo_red "INSTALL NETBOOT"
 
-  minion_wait
   echo_blue "Applying states"
   salt -C 'I@compunaut_guacamole:* or I@compunaut_vnc:* or I@compunaut_piserver:*' state.apply compunaut_guacamole,compunaut_guacamole.mysql,compunaut_vnc,compunaut_piserver --async
 
