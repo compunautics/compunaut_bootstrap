@@ -18,12 +18,6 @@ sleep 20
 salt-key -A -y
 sleep 20
 
-# Update all VMs
-minion_wait
-echo_red "Update all VMs"
-salt -C "not I@compunaut_hypervisor:*" cmd.run 'apt-get update && apt-get dist-upgrade -y' --async
-sleep 180
-
 # Configure Mine on all Nodes
 minion_wait
 echo_red "Configure mine on all Nodes"
