@@ -20,11 +20,11 @@ echo_blue() {
 
 minion_wait() {
   echo -e "${GREEN}\nChecking minion readiness...${NC}"
-  while [[ $(salt '*' test.ping | grep -iP "no response|not connected") ]]; do
+  while [[ $(salt -C 'not *printer*' test.ping | grep -iP "no response|not connected") ]]; do
     echo -e "${GREEN}Not all salt minions are ready...\nWaiting 5 seconds...${NC}"
     sleep 5
   done
-  while [[ $(salt '*' saltutil.running | grep -i "jid") ]]; do
+  while [[ $(salt -C 'not *printer*' saltutil.running | grep -i "jid") ]]; do
     echo -e "${GREEN}Some minions are running jobs...\nWaiting 5 seconds...${NC}"
     sleep 5
   done
