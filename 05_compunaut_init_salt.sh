@@ -18,8 +18,8 @@ source ./compunaut_functions
   ./compunaut_init_salt_install_dbs.sh
   ./compunaut_init_salt_install_apps.sh
 
-  echo_green "Waiting 600 seconds"
-  sleep 600
+  echo_green "Waiting 720 seconds"
+  sleep 720
 
 # FINAL SETUP
   echo_red "FINAL SETUP"
