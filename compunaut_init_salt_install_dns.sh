@@ -9,3 +9,7 @@ source ./compunaut_functions
   minion_wait
   echo_blue "Applying states"
   salt -C 'not I@compunaut_hypervisor:*' state.apply compunaut_consul,compunaut_dnsmasq -b8 --batch-wait 15 --state_output=mixed
+
+  minion_wait
+  echo_blue "Restarting dnsmasq"
+  salt '*' cmd.run 'systemctl restart dnsmasq'
