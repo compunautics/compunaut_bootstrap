@@ -4,7 +4,7 @@
 salt -C 'salt* or kvm*' state.sls compunaut_hypervisor.reset --state_output=mixed
 
 # delete all keys for all minions (except salt and kvm nodes)
-salt-key -d 'compunaut*' -y
+salt-key -d '*compunaut*' -y
 
 # delete all openvpn certs
 rm -fv /srv/repos/compunaut_openvpn/salt/keys/*
