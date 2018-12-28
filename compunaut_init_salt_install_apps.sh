@@ -4,7 +4,6 @@ cd "${0%/*}"
 source ./compunaut_functions
 
 # Install Netboot
-  minion_wait
   echo_red "INSTALL NETBOOT"
 
   echo_blue "Applying states"

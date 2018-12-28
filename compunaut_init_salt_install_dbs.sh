@@ -21,3 +21,5 @@ source ./compunaut_functions
 
   echo_blue "Setting up LDAP replication and memberOf module"
   salt -C 'I@openldap:slapd_services:*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
+
+  minion_wait
