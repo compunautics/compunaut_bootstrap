@@ -9,5 +9,5 @@ minion_wait
 salt '*ldap*' cmd.run 'systemctl stop slapd && apt-get purge slapd -y'
 
 ### REINSTALL OPENLDAP
-salt '*ldap*' state.apply compunaut_openldap,compunaut_openldap.memberof,compunaut_openldap.repl -b1 --state_output=mixed
+salt '*ldap*' state.apply compunaut_openldap -b1 --state_output=mixed
 
