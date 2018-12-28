@@ -4,20 +4,20 @@ cd "${0%/*}"
 source ./compunaut_functions
 
 ### HYPERVISOR SETUP
-  ./compunaut_init_salt_create_vms.sh
+  time ./compunaut_init_salt_create_vms.sh
 
   echo_green "Waiting 45 seconds"
   sleep 45
 
 ### DEPLOY COMPUNAUT
   update_data
-  ./compunaut_init_salt_install_keepalived.sh
+  time ./compunaut_init_salt_install_keepalived.sh
   minion_wait
-  ./compunaut_init_salt_install_openvpn.sh
+  time ./compunaut_init_salt_install_openvpn.sh
   update_data
-  ./compunaut_init_salt_install_dns.sh
-  ./compunaut_init_salt_install_dbs.sh
-  ./compunaut_init_salt_install_apps.sh
+  time ./compunaut_init_salt_install_dns.sh
+  time ./compunaut_init_salt_install_dbs.sh
+  time ./compunaut_init_salt_install_apps.sh
 
   echo_green "Waiting 720 seconds"
   sleep 720
@@ -26,8 +26,8 @@ source ./compunaut_functions
   echo_red "FINAL SETUP"
 
   update_data
-  ./compunaut_init_salt_highstate.sh
-  ./compunaut_ssh_keys_update.sh
+  time ./compunaut_init_salt_highstate.sh
+  time ./compunaut_ssh_keys_update.sh
 
 # Don't exit until all salt minions are answering
   minion_wait
