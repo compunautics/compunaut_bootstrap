@@ -10,16 +10,11 @@ source ./compunaut_functions
   salt -C 'I@mysql:server:*' state.apply compunaut_mysql,compunaut_influxdb --async
 
   echo_blue "Installing LDAP"
-  salt -C 'I@openldap:slapd_services:*' state.apply compunaut_openvpn.deploy,compunaut_openldap -b1 --state_output=mixed
+  salt -C 'I@openldap:slapd_services:*' state.apply compunaut_openvpn.deploy,compunaut_openldap,compunaut_openldap.repl,compunaut_openldap.memberof -b1 --state_output=mixed
   echo_green "Waiting 60 seconds"
   sleep 60
 
   update_data
 
   echo_blue "Setting up Galera"
-  salt -C 'I@mysql:server:*' state.apply compunaut_mysql.galera --async
-
-  echo_blue "Setting up LDAP replication and memberOf module"
-  salt -C 'I@openldap:slapd_services:*' state.apply compunaut_openldap.memberof,compunaut_openldap.repl --state_output=mixed
-
-  minion_wait
+  salt -C 'I@mysql:server:*' state.apply compunaut_mysql.galera --state_output=mixed
