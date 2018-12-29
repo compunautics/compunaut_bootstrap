@@ -4,7 +4,6 @@ cd "${0%/*}"
 source ./compunaut_functions
 
 # Install openvpn
-  minion_wait
   echo_red "DEPLOY OPENVPN"
 
   echo_blue "Generating OpenVPN certs for minions"
