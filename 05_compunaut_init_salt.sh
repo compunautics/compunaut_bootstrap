@@ -16,11 +16,12 @@ source ./compunaut_functions
   time ./compunaut_init_salt_install_openvpn.sh
   update_data
   time ./compunaut_init_salt_install_dns.sh
+  time ./compunaut_init_salt_install_piserver_vnc.sh
   time ./compunaut_init_salt_install_dbs.sh
   time ./compunaut_init_salt_install_apps.sh
 
-  echo_green "Waiting 720 seconds"
-  sleep 720
+  echo_green "Waiting 360 seconds"
+  sleep 360
 
 # FINAL SETUP
   echo_red "FINAL SETUP"

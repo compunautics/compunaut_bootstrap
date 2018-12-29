@@ -4,10 +4,10 @@ cd "${0%/*}"
 source ./compunaut_functions
 
 # Install Netboot
-  echo_red "INSTALL NETBOOT"
+  echo_red "INSTALL GUACAMOLE"
 
   echo_blue "Applying states"
-  salt -C 'I@compunaut_guacamole:* or I@compunaut_vnc:* or I@compunaut_piserver:*' state.apply compunaut_guacamole,compunaut_guacamole.mysql,compunaut_vnc,compunaut_piserver --async
+  salt -C 'I@compunaut_guacamole:*' state.apply compunaut_guacamole,compunaut_guacamole.mysql --async
 
 # Install Gitlab
   echo_red "INSTALL GITLAB"
