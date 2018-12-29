@@ -18,6 +18,7 @@ source ./compunaut_functions
   time ./compunaut_init_salt_install_dns.sh
   time ./compunaut_init_salt_install_piserver_vnc.sh
   time ./compunaut_init_salt_install_dbs.sh
+  minion_wait
   time ./compunaut_init_salt_install_apps.sh
 
   echo_green "Waiting 360 seconds"
