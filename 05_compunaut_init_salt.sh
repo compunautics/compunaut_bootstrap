@@ -11,8 +11,9 @@ source ./compunaut_functions
 
 ### DEPLOY COMPUNAUT
   update_data
-  time ./compunaut_init_salt_install_keepalived.sh
+  time ./compunaut_init_salt_install_iptables.sh
   minion_wait
+  time ./compunaut_init_salt_install_keepalived.sh
   time ./compunaut_init_salt_install_openvpn.sh
   update_data
   time ./compunaut_init_salt_install_dns.sh
