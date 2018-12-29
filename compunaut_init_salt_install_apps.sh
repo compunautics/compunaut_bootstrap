@@ -7,7 +7,7 @@ source ./compunaut_functions
   echo_red "INSTALL GUACAMOLE"
 
   echo_blue "Applying states"
-  salt -C 'I@compunaut_guacamole:*' state.apply compunaut_guacamole,compunaut_guacamole.mysql --async
+  salt -C 'I@compunaut_guacamole:*' state.apply compunaut_guacamole.mysql,compunaut_guacamole --async
 
 # Install Gitlab
   echo_red "INSTALL GITLAB"
