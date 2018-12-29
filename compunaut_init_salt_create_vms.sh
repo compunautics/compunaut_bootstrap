@@ -39,5 +39,7 @@ source ./compunaut_functions
   salt '*'  saltutil.sync_all -b6 --batch-wait 20 1>/dev/null
 
   minion_wait
-  echo_blue "Restart salt minions one more time"
+  echo_blue "Restarting salt minions one more time"
   salt '*' cmd.run 'salt-call service.restart salt-minion'
+  echo_green "Waiting 20 seconds"
+  sleep 20
