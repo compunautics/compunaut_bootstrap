@@ -3,17 +3,17 @@
 cd "${0%/*}"
 source ./compunaut_functions
 
-# Install Netboot
-  echo_red "INSTALL GUACAMOLE"
-
-  echo_blue "Applying states"
-  salt -C 'I@compunaut_guacamole:*' state.apply compunaut_guacamole.mysql,compunaut_guacamole --async
-
 # Install Gitlab
   echo_red "INSTALL GITLAB"
 
   echo_blue "Applying states"
   salt -C 'I@gitlab:*' state.apply compunaut_gitlab --async
+
+# Install Netboot
+  echo_red "INSTALL GUACAMOLE"
+
+  echo_blue "Applying states"
+  salt -C 'I@compunaut_guacamole:*' state.apply compunaut_guacamole.mysql,compunaut_guacamole --async
 
 # Install Grafana
   echo_red "INSTALL GRAFANA"
