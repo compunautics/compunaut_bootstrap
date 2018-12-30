@@ -22,8 +22,8 @@ source ./compunaut_functions
   minion_wait
   time ./compunaut_init_salt_install_apps.sh
 
-  echo_green "Waiting 360 seconds"
-  sleep 360
+  echo_green "Waiting 300 seconds"
+  sleep 300
 
 # FINAL SETUP
   update_data
