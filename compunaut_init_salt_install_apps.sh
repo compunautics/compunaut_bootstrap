@@ -15,12 +15,6 @@ source ./compunaut_functions
   echo_blue "Applying states"
   salt -C 'I@compunaut_guacamole:*' state.apply compunaut_guacamole.mysql,compunaut_guacamole --async
 
-# Install Grafana
-  echo_red "INSTALL GRAFANA"
-
-  echo_blue "Applying states"
-  salt -C 'I@grafana:*' state.apply compunaut_grafana --async
-
 # Install Rundeck
   echo_red "INSTALL RUNDECK"
 
@@ -31,4 +25,10 @@ source ./compunaut_functions
   echo_red "INSTALL HAPROXY"
 
   echo_blue "Applying states"
-  salt -C 'I@haproxy:global:*' state.apply compunaut_haproxy --state_output=mixed
+  salt -C 'I@haproxy:global:*' state.apply compunaut_haproxy --async
+
+# Install Grafana
+  echo_red "INSTALL GRAFANA"
+
+  echo_blue "Applying states"
+  salt -C 'I@grafana:*' state.apply compunaut_grafana --state_output=mixed -b1

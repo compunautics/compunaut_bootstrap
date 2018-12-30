@@ -26,9 +26,9 @@ source ./compunaut_functions
   sleep 360
 
 # FINAL SETUP
-  echo_red "FINAL SETUP"
-
   update_data
+
+  echo_red "FINAL SETUP"
   time ./compunaut_init_salt_highstate.sh
   time ./compunaut_ssh_keys_update.sh
 
