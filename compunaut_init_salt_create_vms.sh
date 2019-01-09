@@ -10,7 +10,7 @@ source ./compunaut_functions
   echo_red "SET UP HYPERVISORS"
 
   echo_blue "Install KVM and boot VMs"
-  salt -C 'I@compunaut_hypervisor:*' state.apply compunaut_hypervisor --state_output=mixed
+  salt -C 'I@compunaut_hypervisor:*' state.apply compunaut_hypervisor,compunaut_default.udev --state_output=mixed
 
 # Log into vms and configure salt
   echo_blue "Logging into VMs and configuring hostname and salt"
