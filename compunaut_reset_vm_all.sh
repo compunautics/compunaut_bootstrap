@@ -1,6 +1,10 @@
 #!/bin/bash
+### FUNCTIONS
+cd "${0%/*}"
+source ./compunaut_functions
 
 # reset all vms on all hypervisors
+minion_wait
 salt -C 'salt* or kvm*' state.sls compunaut_hypervisor.reset --state_output=mixed
 
 # delete all keys for all minions (except salt and kvm nodes)
@@ -9,3 +13,9 @@ salt-key -d '*prtr*' -y
 
 # delete all openvpn certs
 rm -fv /srv/repos/compunaut_openvpn/salt/keys/*
+
+# reset consul
+minion_wait
+salt '*' cmd.run 'systemctl stop consul'
+salt '*' cmd.run 'rm -rfv /opt/consul/'
+
