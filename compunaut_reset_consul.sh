@@ -10,6 +10,4 @@ salt '*' cmd.run 'systemctl stop consul'
 salt '*' cmd.run 'rm -rfv /opt/consul/'
 
 ### REINSTALL CONSUL
-update_data
-
 salt '*' state.apply compunaut_consul
