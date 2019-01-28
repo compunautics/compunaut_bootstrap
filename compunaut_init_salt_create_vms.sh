@@ -36,4 +36,4 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Sync all"
-  salt '*'  saltutil.sync_all -b6 --batch-wait 25 1>/dev/null
+  salt '*'  saltutil.sync_all -b4 --batch-wait 25 1>/dev/null
