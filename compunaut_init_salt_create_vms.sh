@@ -30,9 +30,9 @@ source ./compunaut_functions
 # Configure mine on master and minions
   minion_wait
   echo_blue "Configure salt minions"
-  salt '*' state.apply compunaut_salt.minion --async
-  echo_green "Waiting 100 seconds"
-  sleep 100
+  salt '*' state.apply compunaut_salt.minion -b4 --batch-wait 25 --state_output=mixed
+  echo_green "Waiting 20 seconds"
+  sleep 20
 
   minion_wait
   echo_blue "Sync all"
