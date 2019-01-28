@@ -11,7 +11,7 @@ source ./compunaut_functions
 
   minion_wait
   echo_blue "Deploying OpenVPN"
-  salt -C 'I@openvpn:*' state.apply compunaut_consul,compunaut_openvpn,compunaut_default -b8 --batch-wait 25 --state_output=mixed
+  salt -C 'I@openvpn:*' state.apply compunaut_openvpn,compunaut_default -b8 --batch-wait 25 --state_output=mixed
 
   echo_blue "Restarting OpenVPN"
   salt -C 'I@openvpn:*' cmd.run 'systemctl restart openvpn'
