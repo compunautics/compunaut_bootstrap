@@ -4,7 +4,6 @@ cd "${0%/*}"
 source ./compunaut_functions
 
 # reset all vms on all hypervisors
-minion_wait
 salt -C 'salt* or kvm*' state.sls compunaut_hypervisor.reset --state_output=mixed
 
 # delete all keys for all minions (except salt and kvm nodes)

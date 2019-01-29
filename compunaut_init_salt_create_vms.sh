@@ -24,8 +24,8 @@ source ./compunaut_functions
   sleep 15
 
   salt-key -A -y
-  echo_green "Waiting 30 seconds"
-  sleep 30
+  echo_green "Waiting 60 seconds"
+  sleep 60
 
 # Configure mine on master and minions
   minion_wait
