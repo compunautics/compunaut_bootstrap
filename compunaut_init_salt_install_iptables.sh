@@ -7,4 +7,4 @@ source ./compunaut_functions
   echo_red "INSTALL IPTABLES"
 
   echo_blue "Applying states"
-  salt '*' state.apply compunaut_iptables -b6 --batch-wait 25 --state_output=mixed
+  salt '*' state.apply compunaut_iptables -b8 --batch-wait 10 --state_output=mixed

@@ -34,28 +34,28 @@ minion_wait() {
 
 update_data() {
   echo_blue "UPDATING MINION DATA"
+  minion_wait
   echo_green "Deleting cache"
   rm -fv /var/cache/salt/master/pillar_cache/*
 
-  minion_wait
   echo_green "Updating grains"
-  salt '*' saltutil.refresh_grains -b4 --batch-wait 15 1>/dev/null
+  salt '*' saltutil.refresh_grains -b8 --batch-wait 10 1>/dev/null
   echo_green "Done. Waiting 15 seconds"
   sleep 15
 
   minion_wait
   echo_green "Updating mine"
   salt '*' mine.update --async
-  echo_green "Done. Waiting 15 seconds"
-  sleep 15
+  echo_green "Done. Waiting 10 seconds"
+  sleep 10
 
   minion_wait
   echo_green "Updating pillar"
-  salt '*' saltutil.refresh_pillar -b4 --batch-wait 15 1>/dev/null
-  echo_green "Done. Waiting 15 seconds"
-  sleep 15
+  salt '*' saltutil.refresh_pillar -b8 --batch-wait 10 1>/dev/null
+  echo_green "Done. Waiting 10 seconds"
+  sleep 10
 
   minion_wait
   echo_green "Populating cache"
-  salt '*' pillar.items -b8 --batch-wait 15 1>/dev/null
+  salt '*' pillar.items -b8 --batch-wait 10 1>/dev/null
 }

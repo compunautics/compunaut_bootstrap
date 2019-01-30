@@ -8,4 +8,4 @@ source ./compunaut_functions
   salt -C 'I@compunaut_hypervisor:*' state.highstate --state_output=mixed
 
   echo_blue "Highstating the VMs"
-  salt -C 'not I@compunaut_hypervisor:*' state.highstate -b6 --batch-wait 25 --state_output=mixed
+  salt -C 'not I@compunaut_hypervisor:*' state.highstate -b8 --batch-wait 15 --state_output=mixed

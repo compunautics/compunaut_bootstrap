@@ -26,8 +26,8 @@ minion_wait() {
 
   echo_blue "Installing LDAP"
   salt -C 'I@openldap:slapd_services:*' state.apply compunaut_openvpn.deploy,compunaut_openldap -b1 --state_output=mixed
-  echo_green "Waiting 60 seconds"
-  sleep 60
+  echo_green "Waiting 45 seconds"
+  sleep 45
 
   update_data
 

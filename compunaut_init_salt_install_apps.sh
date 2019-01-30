@@ -28,6 +28,9 @@ source ./compunaut_functions
   salt -C 'I@haproxy:global:*' state.apply compunaut_haproxy --async
 
 # Install Grafana
+  echo_green "Wait 30 seconds"
+  sleep 30
+
   echo_red "INSTALL GRAFANA"
 
   echo_blue "Applying states"
