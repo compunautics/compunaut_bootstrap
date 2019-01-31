@@ -22,14 +22,18 @@ source ./compunaut_functions
   minion_wait
   time ./compunaut_init_salt_install_apps.sh
 
-  echo_green "Waiting 150 seconds"
-  sleep 150
+  echo_green "Waiting 120 seconds"
+  sleep 120
 
 # FINAL SETUP
   update_data
 
   echo_red "FINAL SETUP"
   time ./compunaut_init_salt_highstate.sh
+
+  echo_green "Waiting 240 seconds"
+  sleep 240
+
   time ./compunaut_ssh_keys_update.sh
 
 # Don't exit until all salt minions are answering
