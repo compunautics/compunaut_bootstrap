@@ -22,10 +22,10 @@ source ./compunaut_functions
   salt -C 'I@rundeck:*' state.apply compunaut_rundeck --async
 
 # Install Haproxy
-  echo_red "INSTALL HAPROXY"
+  echo_red "INSTALL HAPROXY AND MISSION CONTROL"
 
   echo_blue "Applying states"
-  salt -C 'I@haproxy:global:*' state.apply compunaut_haproxy --async
+  salt -C 'I@haproxy:global:*' state.apply compunaut_haproxy,compunaut_mission_control --async
 
 # Install Grafana
   echo_green "Wait 30 seconds"
