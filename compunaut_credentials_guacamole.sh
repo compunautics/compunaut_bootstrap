@@ -1,4 +1,4 @@
 #!/bin/bash
 
-salt '*netboot*' pillar.get compunaut:global_vars:guac_admin_user
-salt '*netboot*' pillar.get compunaut:global_vars:guac_unencrypted_admin_password
+salt -I 'compunaut_salt:enabled:True' pillar.get compunaut:secrets:guacamole:guac_admin_user
+salt -I 'compunaut_salt:enabled:True' pillar.get compunaut:secrets:guacamole:guac_unencrypted_admin_password

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-salt '*rundeck*' pillar.get compunaut:global_vars:rundeck_admin_user
-salt '*rundeck*' pillar.get compunaut:global_vars:rundeck_admin_unencrypted_password
+salt -I 'compunaut_salt:enabled:True' pillar.get compunaut:secrets:rundeck:rundeck_admin_user
+salt -I 'compunaut_salt:enabled:True' pillar.get compunaut:secrets:rundeck:rundeck_admin_unencrypted_password
