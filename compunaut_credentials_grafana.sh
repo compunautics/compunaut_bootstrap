@@ -1,4 +1,4 @@
 #!/bin/bash
 
-salt '*monitor*' pillar.get compunaut:global_vars:grafana_admin_user
-salt '*monitor*' pillar.get compunaut:global_vars:grafana_unencrypted_admin_password
+salt -I 'compunaut_salt:enabled:True' pillar.get compunaut:secrets:grafana:grafana_admin_user
+salt -I 'compunaut_salt:enabled:True' pillar.get compunaut:secrets:grafana:grafana_unencrypted_admin_password
